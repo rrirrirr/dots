@@ -1,0 +1,20 @@
+/** Basic config file **/
+
+configuration {
+  show-icons:         false;
+  icon-theme:         "Papirus";
+  font:               "Proxima Nova 22";
+  terminal:            "kitty";
+lines:                 0;
+line-padding:          10;
+matching:              "fuzzy";
+bw:                    0;
+padding:               0;
+separator-style:       none;
+hide-scrollbar:        true;
+line-margin:           0;
+  /* theme: "~/.config/rofi/nordtheme.rasi"; */
+
+/*theme: "~/.cache/wal/colors-rofi-dark.rasi";*/
+theme: "~/.config/rofi/mytheme.rasi";
+}
