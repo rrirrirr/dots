@@ -1,0 +1,291 @@
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+
+plug "andreyorst/plug.kak" noload
+plug "occivink/kakoune-phantom-selection"
+plug "Delapouite/kakoune-text-objects"
+plug "https://github.com/h-youhei/kakoune-surround"
+plug "alexherbo2/auto-pairs.kak" %{
+	enable-auto-pairs
+}
+evaluate-commands %sh{ colorcol }
+hook global WinCreate .* %{
+  colorcol-enable
+  colorcol-refresh-continuous
+}
+plug "andreyorst/fzf.kak" config %{
+    require-module fzf
+    require-module fzf-buffer
+    require-module fzf-cd
+    require-module fzf-file
+    require-module fzf-grep
+    require-module fzf-search
+
+    map global user a ': fzf-mode<ret>' -docstring 'fzf'
+}  defer fzf %{
+    set-option global fzf_terminal_command 'terminal kak -c %val{session} -e "%arg{@}"' 
+}
+plug 'delapouite/kakoune-buffers' %{
+#  map global normal ^ q
+#  map global normal <a-^> Q
+#  map global normal q b
+#  map global normal Q B
+#  map global normal <a-q> <a-b>
+#  map global normal <a-Q> <a-B>
+  map global user g ': pick-buffers<ret>' -docstring 'buffers'
+  map global user G ': enter-buffers-mode<ret>' -docstring 'buffers'
+  map global user q ':delete-buffer<ret>'
+  map global user Q ':delete-buffer!<ret>'
+}
+plug 'delapouite/kakoune-i3' %{
+  # Suggested mapping
+  map global user 3 ': enter-user-mode i3<ret>' -docstring 'i3 mode'
+}
+plug "danr/kakoune-easymotion"
+plug "occivink/kakoune-snippets" config %{
+    set-option -add global snippets_directories "~/.config/kak/plugins/kakoune-snippet-collection/"
+    # some other kakoune-snippets related configurations
+}
+plug "andreyorst/kakoune-snippet-collection"
+# plug "lePerdu/kakboard" %{
+    # hook global WinCreate .* %{ kakboard-enable }
+# }
+plug "JJK96/kakoune-emmet"
+map global insert <a-ret> "<esc>x: emmet<ret>"
+
+plug "occivink/kakoune-sudo-write"
+
+eval %sh{kak-lsp --kakoune -s $kak_session --config /home/utter/.config/kak-lsp/kak-lsp.toml}
+    hook global WinSetOption filetype=(python|html|javascript|typescript|css) %{
+    lsp-enable-window
+}
+set-option global lsp_config %{
+    [language.python.settings._]
+    "pyls.configurationSources" = ["flake8"]
+}
+lsp-auto-hover-enable
+set global lsp_hover_anchor false
+map global user m %{: enter-user-mode lsp<ret>} -docstring "LSP mode"
+# plug "kakounedotcom/connect.kak"
+# source "~/.config/kak/plugins/connect/connect.kak"
+# source "~/.config/kak/plugins/connect/modules/nnn/nnn.kak"
+# require-module connect
+plug "kakounedotcom/prelude.kak"
+# plug "alexherbo2/connect.kak" %{
+  # require-module connect-nnn
+  # require-module connect-fzf
+# }
+evaluate-commands %sh{
+  kcr init kakoune
+}
+# require-module connect-nnn
+# Explore files with nnn
+# alias global explore-files nnn
+# alias global explore-buffers fzf-buffers
+
+hook global ModuleLoaded kitty %{
+  alias global popup kitty-terminal-tab # or kitty-terminal
+  # set global kitty_window_type kitty
+}
+set-option global windowing_modules 'x11'
+#set-option global auto_pairs ( ) { } [ ] '"' '"' "'" "'" ` ` “ ” ‘ ’ « » ‹ ›
+
+colorscheme berry
+
+add-highlighter global/ number-lines -separator ' ' -hlcursor
+
+# Highlight trailing whitespace
+# 
+add-highlighter global/ regex \h+$ 0:Error
+
+# Softwrap long lines
+add-highlighter global/ wrap -word -indent
+
+# Width of a tab
+set-option global tabstop 4
+
+# Indent with 4 spaces
+set-option global indentwidth 4
+
+# Always keep one line and three columns displayed around the cursor
+set-option global scrolloff 1,3
+
+
+map global normal t h
+map global normal <a-t> <a-h>
+map global normal <s-t> <s-h>
+map global normal <c-t> <c-h>
+map global goto   t h
+
+map global normal n j
+map global normal <a-n> pagedown
+map global normal <s-n> <s-j>
+map global normal <c-n> <c-j>
+map global goto   n b
+map global goto   N j
+map global view   n t
+
+map global normal l k
+map global normal <a-l> pageup
+map global normal <s-l> <s-k>
+map global normal <c-l> <c-k>
+map global goto   l t
+map global goto   L k
+map global view   l b
+
+map global normal s l
+map global normal <a-s> <a-l>
+map global normal <s-s> <s-l>
+map global normal <c-s> <c-l>
+map global goto   s l
+
+
+#space mod
+map global normal <F1> b
+map global insert <F1> b
+map global normal <F2> 'lbw'
+map global normal <F3> w
+map global normal <F4> '*/<ret>'
+map global normal <s-F1> B
+map global normal <s-F3> W
+
+#h mod
+def -params 1 extend-line-down %{
+  exec "<a-:>%arg{1}X"
+}
+def -params 1 extend-line-up %{
+  exec "<a-:><a-;>%arg{1}K<a-;>"
+  try %{
+    exec -draft ';<a-K>\n<ret>'
+    exec X
+  }
+  exec '<a-;><a-X>'
+}
+map global normal <F6> ':extend-line-down %val{count}<ret>'
+map global normal <F8> ':extend-line-up %val{count}<ret>'
+map global normal <F5> n
+# map global normal <F6> x
+map global normal <F7> n
+#map global normal <F8> 
+
+#r mod
+map global normal <c-F5> ": phantom-selection-iterate-prev<ret>"
+map global normal <c-F6> C
+map global normal <c-F7> ": phantom-selection-iterate-next<ret>"
+map global normal <c-F8> 'kC'
+map global insert <c-F7> "<esc>: phantom-selection-iterate-next<ret>i"
+map global insert <c-F5> "<esc>: phantom-selection-iterate-prev<ret>i"
+
+
+#map global normal d b
+#map global normal <a-d> <a-b>
+#map global normal <s-d> <s-b>
+#map global normal <c-d> <c-b>
+#map global goto   d b
+#
+map global normal  u c
+
+#map global normal p w
+#map global normal <a-p> <a-w>
+#map global normal <s-p> <s-w>
+#map global normal <c-p> <c-w>
+
+
+map global normal a i
+map global normal k o
+map global normal A a
+map global normal h g
+map global normal b <s-o>
+
+# map global normal b n
+#map global normal B N
+
+map global normal e s
+map global normal E /
+map global normal g d
+map global normal o v
+map global normal y f
+#map global normal Y F
+map global normal i x
+#map global normal I <s-x>
+map global normal f u
+map global normal F U
+map global normal m <space>
+map global normal v <semicolon>
+# map global normal d y
+
+map global normal <space> ,
+# map global normal <s-m> <s-p>
+# map global normal <s-t> t
+
+map global normal I <percent>
+
+map global normal <a-q> <a-`> 
+
+map global normal r :
+# map global normal ä /
+
+map global normal <space> ,
+
+#hook global normalkey '[dgu]' %{
+#  nop %sh{
+#    (printf '%s' "$kak_main_reg_dquote" | xclip -filter | xclip -selection clipboard) < /dev/null > /dev/null 2>&1 &
+#  }
+#}
+map global normal d '<a-|>xclip -i -selection clipboard<ret>'
+# Paste
+map global normal P -docstring 'Paste (After)' '<a-!>xclip -out -selection clipboard<ret>'
+map global normal p -docstring 'Paste (Before)' '!xclip -out -selection clipboard<ret>'
+map global normal <c-p> -docstring 'Replace' '|xclip -out -selection clipboard<ret>'
+# map global normal , <space>
+#map global user a ': fzf-mode<ret>'
+map global user <space> "gt: easy-motion-w<ret>"
+map global user n ": easy-motion-j<ret>"
+map global user l ": easy-motion-k<ret>"
+map global user y ": easy-motion-char<ret>"
+map global user s ": easy-motion-f<ret>"
+map global user t ": easy-motion-alt-f<ret>"
+
+map global normal q ":comment-line<ret>"
+map global normal Q ":comment-block<ret>"
+
+map global normal å ":format<ret>"
+
+map global normal ö ':surround<ret>'
+map global normal Ö ':surround-with-tag<ret>'
+map global user   <a-l>  ':select-surrounding-tag<ret>'
+map global user   <c-l>  ':select-surround<ret>'
+
+#####nnn
+# map global normal <a-b> ':evaluate-commands %sh{kitty --name sidebar -e sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> '
+# 
+map global normal <a-b> ':connect terminal sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> ' 
+
+hook global WinSetOption filetype=html %{
+    set-option buffer formatcmd "run(){ tidy -q --indent yes --indent-spaces %opt{tabstop}  2>/dev/null || true; } && run"
+}
+hook global BufSetOption filetype=css %{
+    set-option buffer formatcmd "prettierd --stdin-filepath=%val{buffile}"
+}
+
+define-command rofi-buffers \
+-docstring 'Select an open buffer using Rofi' %{ evaluate-commands %sh{
+    BUFFER=$(printf "%s\n" "${kak_buflist}" | tr " " "\n" | rofi -dmenu | tr -d \')
+    if [ -n "$BUFFER" ]; then
+        printf "%s\n" "buffer ${BUFFER}"
+    fi
+} }
+
+define-command rofi-files \
+-docstring 'Select files in project using Ag and Rofi' %{nop %sh{
+   FILE=$(rg "" | rofi -dmenu)
+    if [ -n "$FILE" ]; then
+        printf 'eval -client %%{%s} edit %%{%s}\n' "${kak_client}" "${FILE}" | kak -p "${kak_session}"
+    fi
+} }
+
+map global normal j     ": phantom-selection-add-selection<ret>"
+map global normal b     ": phantom-selection-select-all; phantom-selection-clear<ret>"
+map global normal <s-j> ": phantom-selection-iterate-next<ret>"
+map global normal <s-b> ": phantom-selection-iterate-prev<ret>"
+
+
