@@ -31,7 +31,7 @@ set completion-highlight-fg '#1c0222'
 set completion-highlight-bg '#97bcb8'
 
 # Default foreground/background color
-set default-bg rgba(,,,0)
+set default-bg rgba(100,100,100,0)
 
 # Input bar
 set inputbar-fg '#97bcb8'

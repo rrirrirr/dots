@@ -33,6 +33,7 @@ c11= ${xrdb:color11}
 
 
 [bar/simple]
+enable-ipc = true
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
 height = 16
@@ -74,7 +75,7 @@ modules-right = wlan battery
 ;wm-restack = bspwm
 ;wm-restack = i3
 
-;override-redirect = true
+override-redirect = true
 
 ;scroll-up = bspwm-desknext
 ;scroll-down = bspwm-deskprev

@@ -26,8 +26,8 @@ vim.g.python3_host_prog = "/bin/python3.10"
  hooks.add("setup_mappings", function(map)
     map("n", "ö", ":", opt) -- example to delete the buffer 
     map("n", "-", "/", opt) -- example to delete the buffer
+    map("n", "<leader>mm", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts) -- format
   end)
-
 -- To add new plugins, use the "install_plugin" hook,
 -- NOTE: we heavily suggest using Packer's lazy loading (with the 'event' field)
 -- see: https://github.com/wbthomason/packer.nvim
@@ -51,18 +51,16 @@ hooks.add("install_plugins", function(use)
          require("custom.plugins.null-ls").setup()
       end,
    }
-    use {
+   use {
       "williamboman/nvim-lsp-installer",
-      config = function()
-         local lsp_installer = require "nvim-lsp-installer"
-
-         lsp_installer.on_server_ready(function(server)
-            local opts = {}
-
-            server:setup(opts)
-            vim.cmd [[ do User LspAttachBuffers ]]
-         end)
-      end,
+   }
+  use {
+      'wfxr/minimap.vim',
+      setup = function()
+      vim.g.minimap_width = 10
+      vim.g.minimap_auto_start = o 
+      vim.g.minimap_auto_start_win_enter = 0 
+    end, 
    }
 end)
 

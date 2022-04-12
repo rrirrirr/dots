@@ -16,5 +16,6 @@ line-margin:           0;
   /* theme: "~/.config/rofi/nordtheme.rasi"; */
 
 /*theme: "~/.cache/wal/colors-rofi-dark.rasi";*/
-theme: "~/.config/rofi/mytheme.rasi";
 }
+@theme "~/.config/rofi/mytheme.rasi"
+

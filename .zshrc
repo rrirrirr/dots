@@ -1,13 +1,16 @@
+# if [ "$TERM" != 'st-256color' ]; then
 # If you come from bash you might have to change your $PATH.
 #export PATH=$HOME/bin:/usr/local/bin:$PATH
-
+source ~/.config/nnn.zsh
 export PATH=$HOME/.local/bin:$PATH
 
 export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$HOME/.nimble/bin:$PATH
+export PATH=$HOME/.node_modules/bin:$PATH
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/utter/.oh-my-zsh
+export ZSH=/home/utter/.oh-my-zsh
 
-
+export EDITOR=kak
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
@@ -55,11 +58,17 @@ ZSH_THEME="arrow"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git alias-tips history zsh-history-substring-search zsh-autosuggestions zsh-completions catimg )
+plugins=(
+	alias-tips
+	history
+	zsh-history-substring-search
+	zsh-autosuggestions
+	zsh-completions
+	# catimg
+	pass
+	# vi-mode
+)
 
-autoload -U compinit && compinit
-
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -89,14 +98,13 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-#
-#
-#
-alias vi='nvim'
-alias gv='gvim -v'
-alias xs="xbps-query -Rs"
-alias ls='exa'
-alias papersplease="wine /home/utter/Downloads/IGG-PapePlease.v1.1.67-S/PapersPlease.exe"
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS="--ansi"
+export FZF_DEFAULT_COMMAND="fd --type file --hidden -I --exclude .git --exclude void-packages"
+
+source $ZSH/oh-my-zsh.sh
+
 #
 #
 #
@@ -104,3 +112,121 @@ alias papersplease="wine /home/utter/Downloads/IGG-PapePlease.v1.1.67-S/PapersPl
 eval $(thefuck --alias)
 . /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #eval "$(pyenv virtualenv-init -)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -n "$NNNLVL" ] && PS1="N$NNNLVL $PS1"
+
+
+# bindkey -M vicmd "j" up-line-or-beginning-search
+#####################################################################################################
+# Vi Mode
+####################################################################################################
+# VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+#   bindkey -v
+
+#   bindkey -M vicmd "t" backward-char
+#   bindkey -M vicmd "n" down-line-or-history
+#   bindkey -M vicmd "l" up-line-or-history
+#   bindkey -M vicmd "s" forward-char
+#   bindkey -M vicmd "a" vi-insert
+#   bindkey -M vicmd "A" vi-insert-bol
+#   bindkey -M vicmd "k" vi-repeat-search
+#   bindkey -M vicmd "K" vi-rev-repeat-search
+#   bindkey -M vicmd "F5" beginning-of-line
+#   bindkey -M vicmd "F7" end-of-line
+#   bindkey -M vicmd "F3" vi-forward-word-end
+#   bindkey -M vicmd "F1" vi-backward-word
+#   bindkey -M vicmd "J" vi-forward-blank-word-end
+
+# # Sane Undo, Redo, Backspace, Delete.
+#   bindkey -M vicmd "f" undo
+#   bindkey -M vicmd "F" redo
+#   bindkey -M vicmd "^?" backward-delete-char
+#   bindkey -M vicmd "g" vi-delete
+#   bindkey -M vicmd "u" vi-change
+
+# # Keep ctrl+r searching
+#   bindkey -M viins '^R' history-incremental-pattern-search-forward
+#   bindkey -M viins '^r' history-incremental-pattern-search-backward
+
+#   bindkey -M vicmd "d" yank
+#   bindkey -M vicmd "i" get-line
+
+# autoload -U compinit && compinit
+
+
+bindkey '^[[15~' beginning-of-line
+bindkey '^[[18~' end-of-line
+bindkey '^[OP' backward-word
+bindkey '^[OR' forward-word
+bindkey '^[OQ' select-in-word
+bindkey '^[OS' delete-word
+
+bindkey '^O' clear-screen
+bindkey '^S' delete-word
+bindkey '^T' backward-delete-word
+# bindkey '^I' kill-whole-line
+bindkey "^F" undo
+bindkey "^P" redo
+
+stty intr "^A"
+stty susp "^Q"
+stty eof "^G"
+# stty stop "^M" #breaks sudo
+# stty start "^J"
+
+
+# ctrl c d z fg s q r y
+
+alias vi='nvim'
+alias gv='gvim -v'
+alias xs="xbps-query -Rs"
+alias ls='exa'
+alias papersplease="wine /home/utter/Downloads/IGG-PapePlease.v1.1.67-S/PapersPlease.exe"
+alias cat="bat"
+alias ps="procs"
+alias fd="fd -I"
+alias -g ZZ="| fzf"
+alias fzfp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
+# alias n="nnn"
+alias -g Z='$(fzf)'
+alias nk="i3-msg move left && i3-msg resize set width 200px && nnn"
+# alias ntree ="sh -c 'i3-msg move left && i3-msg resize set width 200px && nnn'"
+
+
+alias l="exa -l --no-permissions"
+alias la="exa -la --no-permissions"
+
+alias _="doas"
+
+alias battery="bat /sys/class/power_supply/BAT0/capacity"
+
+n ()
+{
+    # Block nesting of nnn in subshells
+    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+        echo "nnn is already running"
+        return
+    fi
+
+    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+    # To cd on quit only on ^G, either remove the "export" as in:
+    #    NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+    #    (or, to a custom path: NNN_TMPFILE=/tmp/.lastd)
+    # or, export NNN_TMPFILE after nnn invocation
+    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+    # stty start undef
+    # stty stop undef
+    # stty lwrap undef
+    # stty lnext undef
+
+    nnn "$@"
+
+    if [ -f "$NNN_TMPFILE" ]; then
+            . "$NNN_TMPFILE"
+            rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}
+# fi

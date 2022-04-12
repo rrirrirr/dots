@@ -46,14 +46,16 @@ smart_borders on
 new_window none
 new_float none
 for_window [class="kitty"] border pixel 0
+for_window [title="bar"] gaps outer 22
 
-hide_edge_borders vertical 
+hide_edge_borders vertical
 
 for_window [con_mark="ncmp"] floating enable
 for_window [class="mpv"] mark "music2", floating enable, move scratchpad, move scratchpad, move absolute position 110 240, resize set 280 280, scratchpad show
 for_window [class="kitty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
-for_window [class="kitty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 380 220, resize set 400 320, scratchpad show
-for_window [class="kitty" instance="ranger"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+for_window [class="kitty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 280 220, resize set 500 420, scratchpad show
+for_window [class="kitty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+# for_window [class="kitty" instance="nnn-sidebar"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
 for_window [class="kitty" instance="wttr"] floating enable, move scratchpad, move absolute position 280 120, resize set 770 550, scratchpad show
 for_window [class="kitty" instance="gotop"] floating enable, move scratchpad, move absolute position 380 320, resize set 770 350, scratchpad show
 for_window [class="kitty" instance="scli"] mark "signal", floating enable, move scratchpad, move absolute position 280 140, resize set 1000 580, scratchpad show
@@ -63,40 +65,50 @@ no_focus [class="mpv"]
 
 floating_modifier $mod
 
+#bindcode 133                            exec polybar-msg cmd show
+#bindcode 133 --release                
 bindsym $mod+m          [con_mark="(music|music2)"]  scratchpad show; focus right
 bindsym $mod+x 			     [con_mark="signal"] scratchpad show 
-bindsym $mod+o                   scratchpad show
-
+#bindsym $mod+o                   scratchpad show
+bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
+bindsym $mod+q 						exec qutebrowser
 bindsym $mod+Return                  exec kitty -o background_opacity=0.0
-bindsym $mod+Shift+q                 kill
-bindsym $mod+d                       exec rofi -show drun
+bindsym $mod+Shift+Return            exec kitty -o background_opacity=0.0 -e kak $(fzf)
+bindsym Shift+Escape                 kill
+bindsym $mod+u                       exec rofi -show drun
 bindsym $mod+Shift+d                 exec rofi -show window
-bindsym $mod+z                       exec --no-startup-id kitty --name ranger -e ranger
-bindsym $mod+w                       exec --no-startup-id kitty --name wttr -o font_size=8.0 -e --hold  curl -s sv.wttr.in/Stockholm
-bindsym $mod+i                       exec --no-startup-id kitty --name gotop -e gotop  
-bindsym $mod+n                       exec networkmanager_dmenu
-bindsym $mod+shift+w                 exec --no-startup-id flash_window
-
+bindsym Control+Mod1+o                       exec kitty --name nnn -o background_opacity=1.0 -e nnn
+# bindsym $mod+w                       exec kitty --name wttr -o font_size=8.0 -e --hold  curl -s sv.wttr.in/Stockholm
+#bindsym $mod+u                       exec kitty --name gotop -e gotop  
+bindsym $mod+Shift+x                 exec networkmanager_dmenu
+bindsym $mod+Shift+w                 exec flash_window
+#bindsym $mod+h                       exec rofi-pass
 #bindsym $mod+m 			   [con_mark="ncmp"]  exec urxvt -e ncmpcpp
-#bindsym $mod+m 			  exec --no-startup-id urxvt -name ncmpcpp -e ncmpcpp
-bindsym $mod+p 			     exec --no-startup-id kitty --name alsamixer -e alsamixer
-bindsym $mod+shift+p                 exec --no-startup-id kitty --name xcolor -e --hold xcolor
-bindsym $mod+Shift+x exec --no-startup-id kitty --name scli -e scli -u +46702126119 -n 
+#bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
+bindsym $mod+Shift+o 			     exec kitty --name alsamixer -o background_opacity=1.0 -e alsamixer
+bindsym $mod+p						 exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+bindsym $mod+Shift+p                 exec kitty --name xcolor -e --hold xcolor
+bindsym $mod+Shift+x				 exec kitty --name scli -e scli -u +46702126119 -n 
 
-#bindsym $mod+Shift+m exec --no-startup-id urxvt -name ncmpcpp -e ncmpcpp;  exec --no-startup-id ~/.local/bin/bum
-bindsym $mod+Shift+m exec --no-startup-id kitty --name spotify-tui -e spotify-tui;  exec --no-startup-id spotifyd --no-daemon
+#bindsym $mod+Shift+m exec urxvt -name ncmpcpp -e ncmpcpp;  exec ~/.local/bin/bum
+bindsym $mod+Shift+m				 exec kitty -o background_opacity=1.0 --name spotify-tui -e spotify-tui;  exec spotifyd --no-daemon
 
-bindsym Print exec --no-startup-id ~/.config/rofi/bin/menu_screenshot
+bindsym Print						 exec ~/.config/rofi/bin/menu_screenshot
 
+bindsym Control+Mod1+h				exec kitty -o background_opacity=0.0
+bindsym Control+Mod1+i				fullscreen toggle
+bindsym Control+Mod1+e				exec rofi -show drun	
+bindsym Control+Mod1+a				exec qutebrowser
+bindsym Control+Mod1+g				kill
 
-bindsym $mod+s			     gaps inner current plus 1
-bindsym $mod+Shift+s	       	     gaps inner current minus 1
+# bindsym $mod+-			     gaps inner current plus 1
+# bindsym $mod+Shift+-	       	     gaps inner current minus 1
 
 # change focus
-bindsym $mod+h                       focus left
-bindsym $mod+j                       focus down
-bindsym $mod+k                       focus up
-bindsym $mod+l                       focus right
+bindsym $mod+t                       focus left
+bindsym $mod+n                       focus down
+bindsym $mod+l                       focus up
+bindsym $mod+s                       focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left                    focus left
@@ -105,10 +117,10 @@ bindsym $mod+Up                      focus up
 bindsym $mod+Right                   focus right
 
 # move                       focused window
-bindsym $mod+Shift+h                 move left
-bindsym $mod+Shift+j                 move down
-bindsym $mod+Shift+k                 move up
-bindsym $mod+Shift+l                 move right
+bindsym $mod+Shift+t                 move left
+bindsym $mod+Shift+n                 move down
+bindsym $mod+Shift+l                move up
+bindsym $mod+Shift+s                 move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left              move left
@@ -117,18 +129,18 @@ bindsym $mod+Shift+Up                move up
 bindsym $mod+Shift+Right             move right
 
 # split in horizontal orientation
-bindsym $mod+g                       split h
+bindsym $mod+w                       split h
 
 # split in vertical orientation
 bindsym $mod+v                       split v
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f                       fullscreen toggle
+bindsym $mod+o                       fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 #bindsym $mod+Shift+w                 layout stacking
 #bindsym $mod+w                       layout tabbed
-bindsym $mod+e                       layout toggle split
+#bindsym $mod+e                       layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space             floating toggle
@@ -137,32 +149,38 @@ bindsym $mod+Shift+space             floating toggle
 bindsym $mod+space                   focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a                       focus parent
+#bindsym $mod+a                       focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
 
 # switch to workspace
-bindsym $mod+1                       workspace 1; exec ~/scripts/hidebar
-bindsym $mod+2                       workspace 2; exec ~/scripts/hidebar unhide
-bindsym $mod+3                       workspace 3; exec ~/scripts/hidebar unhide
-bindsym $mod+4                       workspace 4; exec ~/scripts/hidebar unhide
-bindsym $mod+5                       workspace 5; exec ~/scripts/hidebar unhide
-bindsym $mod+6                       workspace 6; exec ~/scripts/hidebar unhide
-bindsym $mod+7                       workspace 7; exec ~/scripts/hidebar unhide
-bindsym $mod+8                       workspace 8; exec ~/scripts/hidebar unhide
-bindsym $mod+9                       workspace 9; exec ~/scripts/hidebar unhide
-bindsym $mod+0                       workspace 10; exec ~/scripts/hidebar unhide
+# bindcode $mod+43                       workspace 1; exec ~/scripts/hidebar
+# bindcode $mod+31                       workspace 2; exec ~/scripts/hidebar unhide
+# bindcode $mod+26                      workspace 3; exec ~/scripts/hidebar unhide
+# bindcode $mod+a                       workspace 4; exec ~/scripts/hidebar unhide
+# bindcode $mod+g                       workspace 5; exec ~/scripts/hidebar unhide
+# bindcode $mod+d                       workspace 6; exec ~/scripts/hidebar unhide
+#bindsym $mod+r                       workspace 7; exec ~/scripts/hidebar unhide
+#bindsym $mod+:                       workspace 8; exec ~/scripts/hidebar unhide
 
+bindsym $mod+h                       workspace 1
+bindsym $mod+i                       workspace 2
+bindsym $mod+e                      workspace 3
+bindsym $mod+a                       workspace 4
+bindsym $mod+g                       workspace 5
+bindsym $mod+d                       workspace 6
+bindsym $mod+9                       workspace 9
+bindsym $mod+0                       workspace 10
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Control+h move container to workspace 1
+bindsym $mod+Control+i move container to workspace 2
+bindsym $mod+Control+e move container to workspace 3
+bindsym $mod+Control+a move container to workspace 4
+bindsym $mod+Control+g move container to workspace 5
+bindsym $mod+Control+d move container to workspace 6
+# bindsym $mod+Shift+9 move container to workspace 7
+# bindsym $mod+Shift+0 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
@@ -175,16 +193,16 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
+       # These bindings trigger as soon as you enter the resize mode
 
         # Pressing left will shrink the window’s width.
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym t resize shrink width 10 px or 10 ppt
+        bindsym l resize grow height 10 px or 10 ppt
+        bindsym n resize shrink height 10 px or 10 ppt
+        bindsym s resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -197,12 +215,13 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
+bindsym Control+Mod1+y mode "resize"
 
-exec --no-startup-id polybar simple 
-exec --no-startup-id picom 
+# exec --no-startup-id polybar simple
+# deamonise
+exec --no-startup-id picom  
 exec --no-startup-id redshift
-exec --no-startup-id conky -c clock--date--weather__big/.conkyrc
+#exec --no-startup-id conky -c clock--date--weather__big/.conkyrc
 exec --no-startup-id feh --bg-fill Bilder/G3back.png   
 #exec --no-startup-id mopidy
 #exec --no-startup-id ~/scripts/mpd-fifo
@@ -212,3 +231,6 @@ exec --no-startup-id wal -n -i ~/Bilder/Blade-Runner-New-Poster-1_1200_1822_81_s
 #exec --no-startup-id ~/.local/bin/bum
 #exec --no-startup-id urxvt -name ncmpcpp -e ncmpcpp
 exec --no-startup-id flashfocus
+exec --no-startup-id greenclip daemon
+exec --no-startup-id kmonad .config/kmonad/test.kbd
+
