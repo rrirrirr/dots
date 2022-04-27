@@ -177,12 +177,12 @@ stty eof "^G"
 
 
 # ctrl c d z fg s q r y
-
 alias vi='nvim'
 alias gv='gvim -v'
 alias xs="xbps-query -Rs"
 alias ls='exa'
 alias papersplease="wine /home/utter/Downloads/IGG-PapePlease.v1.1.67-S/PapersPlease.exe"
+alias paint="kolourpaint"
 alias cat="bat"
 alias ps="procs"
 alias fd="fd -I"
