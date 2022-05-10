@@ -75,7 +75,7 @@ bindsym Control+$mod+w               exec st -n wttr -f 'Liberation Mono:size=8'
 #bindsym $mod+u                      exec kitty --name gotop -e gotop  
 # bindsym $mod+Shift+x                 exec networkmanager_dmenu
 bindsym $mod+Shift+w                 exec flash_window
-#bindsym $mod+h                       exec rofi-pass
+bindsym $mod+l                       exec rofi-pass
 #bindsym $mod+m 			   [con_mark="ncmp"]  exec urxvt -e ncmpcpp
 #bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
 bindsym $mod+Shift+o 			     exec kitty --name alsamixer -o background_opacity=1.0 -e alsamixer

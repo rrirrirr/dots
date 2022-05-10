@@ -179,7 +179,8 @@ stty eof "^G"
 # ctrl c d z fg s q r y
 alias vi='nvim'
 alias gv='gvim -v'
-alias xs="xbps-query -Rs"
+# alias xs="xbps-query -Rs"
+alias -g xsrc='~/gits/void-packages/xbps-src pkg $(ls ~/gits/void-packages/srcpkgs | fzf)'
 alias ls='exa'
 alias papersplease="wine /home/utter/Downloads/IGG-PapePlease.v1.1.67-S/PapersPlease.exe"
 alias paint="kolourpaint"
@@ -192,7 +193,7 @@ alias fzfp="fzf --preview 'bat --style=numbers --color=always --line-range :500 
 alias -g Z='$(fzf)'
 alias nk="i3-msg move left && i3-msg resize set width 200px && nnn"
 # alias ntree ="sh -c 'i3-msg move left && i3-msg resize set width 200px && nnn'"
-
+alias http='python3 -m http.server'
 
 alias l="exa -l --no-permissions"
 alias la="exa -la --no-permissions"

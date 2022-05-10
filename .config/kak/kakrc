@@ -181,12 +181,16 @@ map global normal <s-s> <s-l>
 map global normal <c-s> <c-l>
 map global goto   s l
 
+map global insert <c-t> <esc>bdi 
+map global insert <F1> <esc>bi 
+map global insert <c-s> <esc>wdi 
+map global insert <F3> <esc>Wi 
+
 
 #space mod
 map global normal <F1> b
-map global insert <F1> b
-map global normal <F2> 'lbw'
-map global normal <F3> w
+map global normal <F3> e
+map global normal <F2> 'lbe'
 map global normal <F4> '<a-;>B<a-;>W'
 map global normal <s-F1> B
 map global normal <s-F3> W
