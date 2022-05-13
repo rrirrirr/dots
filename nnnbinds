@@ -1,0 +1,51 @@
+tnsl
+
+last entry N
+first entry L
+
+home f
+
+intial dir @
+goto E
+
+bookmark x
+
+mark  J
+bookmark j
+
+filter e
+filter mode ctrl  E
+
+file details control A
+detailed listing y
+
+create archive b
+
+sort toggles c
+
+select i
+select multi I
+select all ctrl i
+
+
+move w
+copy p
+move or copy and rename
+ctrl w
+
+delete g 
+
+open in custom a
+
+rename prompt u
+rename content U
+
+edit in editor A
+
+run plugin h
+
+run command o
+launch O
+
+select quit dir Q
+quit ctrl q
