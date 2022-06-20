@@ -1,30 +1,31 @@
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
 
 plug "andreyorst/plug.kak" noload
-plug "occivink/kakoune-phantom-selection"
-plug "Delapouite/kakoune-text-objects"
-plug "https://github.com/h-youhei/kakoune-surround"
-plug "alexherbo2/auto-pairs.kak" %{
+plug-chain "https://github.com/crizan/kak-rainbower" %{
+  set-option global background_rainbow_colors rgb:000000
+} plug "occivink/kakoune-phantom-selection" %{
+} plug "Delapouite/kakoune-text-objects" %{
+} plug "https://github.com/maximbaz/restclient.kak" %{
+} plug "https://github.com/h-youhei/kakoune-surround" %{
+} plug "alexherbo2/auto-pairs.kak" %{
 	enable-auto-pairs
-}
-evaluate-commands %sh{ colorcol }
-hook global WinCreate .* %{
-  colorcol-enable
-  colorcol-refresh-continuous
-}
-plug "andreyorst/fzf.kak" config %{
-    require-module fzf
-    require-module fzf-buffer
-    require-module fzf-cd
-    require-module fzf-file
-    require-module fzf-grep
-    require-module fzf-search
-
-    map global user a ': fzf-mode<ret>' -docstring 'fzf'
-}  defer fzf %{
-    set-option global fzf_terminal_command 'terminal-tab kak -c %val{session} -e "%arg{@}"' 
-}
-plug 'delapouite/kakoune-buffers' %{
+  evaluate-commands %sh{ colorcol }
+  hook global WinCreate .* %{
+    colorcol-enable
+    colorcol-refresh-continuous
+  }
+} plug "andreyorst/fzf.kak" %{ 
+  # config %{
+  require-module fzf
+  require-module fzf-buffer
+  require-module fzf-cd
+  require-module fzf-file
+  require-module fzf-grep
+  require-module fzf-search
+  map global user a ': fzf-mode<ret>' -docstring 'fzf'
+  # }  defer fzf %{
+  # }
+} plug 'delapouite/kakoune-buffers' %{
 #  map global normal ^ q
 #  map global normal <a-^> Q
 #  map global normal q b
@@ -35,42 +36,45 @@ plug 'delapouite/kakoune-buffers' %{
   map global user G ': enter-buffers-mode<ret>' -docstring 'buffers'
   map global user ö ':delete-buffer<ret>'
   # map global user <s-ö> ':delete-buffer!<ret>'
-}
-plug 'delapouite/kakoune-i3' %{
-  # Suggested mapping
-  map global user 3 ': enter-user-mode i3<ret>' -docstring 'i3 mode'
-}
-plug "danr/kakoune-easymotion"
-plug "occivink/kakoune-snippets" config %{
+} plug "danr/kakoune-easymotion" %{
+} plug "occivink/kakoune-snippets" config %{
     set-option -add global snippets_directories "~/.config/kak/plugins/kakoune-snippet-collection/"
     # some other kakoune-snippets related configurations
-}
-plug "andreyorst/kakoune-snippet-collection"
+} plug "andreyorst/kakoune-snippet-collection" %{
 # plug "lePerdu/kakboard" %{
     # hook global WinCreate .* %{ kakboard-enable }
 # }
-plug "JJK96/kakoune-emmet"
-map global insert <c-ret> "<esc>x: emmet<ret>"
+} plug "JJK96/kakoune-emmet" %{
+  map global insert <c-ret> "<esc>x: emmet<ret>" 
 
-plug "occivink/kakoune-sudo-write"
-plug "eraserhd/kak-ansi"
+} plug "occivink/kakoune-sudo-write" %{
+} plug "eraserhd/kak-ansi" %{
+} plug "kakounedotcom/prelude.kak" %{
+}
 
-eval %sh{kak-lsp --kakoune -s $kak_session --config /home/utter/.config/kak-lsp/kak-lsp.toml}
-    hook global WinSetOption filetype=(python|html|javascript|typescript|css) %{
+set-option global fzf_terminal_command 'terminal-tab kak -c %val{session} -e "%arg{@}"'
+set-option global ui_options terminal_status_on_top=true
+
+
+
+define-command lsp-restart %{ lsp-stop; lsp-start }
+
+eval %sh{kak-lsp --kakoune -s $kak_session --config /home/utter/.config/kak-lsp.toml}
+hook global WinSetOption filetype=(python|html|javascript|typescript|css|haskell) %{
     lsp-enable-window
+    # lsp-auto-hover-enable
+    lsp-auto-hover-insert-mode-enable
+    set global lsp_hover_anchor true
 }
 set-option global lsp_config %{
     [language.python.settings._]
     "pyls.configurationSources" = ["flake8"]
 }
-lsp-auto-hover-enable
-set global lsp_hover_anchor true
 map global normal ä %{: enter-user-mode lsp<ret>} -docstring "LSP mode"
 # plug "kakounedotcom/connect.kak"
 # source "~/.config/kak/plugins/connect/connect.kak"
 # source "~/.config/kak/plugins/connect/modules/nnn/nnn.kak"
 # require-module connect
-plug "kakounedotcom/prelude.kak"
 # plug "alexherbo2/connect.kak" %{
   # require-module connect-nnn
   # require-module connect-fzf
@@ -99,34 +103,35 @@ hook global ModuleLoaded kitty %{
 # set-option global windowing_modules 'x11'
 #set-option global auto_pairs ( ) { } [ ] '"' '"' "'" "'" ` ` “ ” ‘ ’ « » ‹ ›
 
-colorscheme berry
+colorscheme cherry
 
-# set-face global PrimarySelection white,blue+F
-# set-face global SecondarySelection black,blue+F
-# set-face global PrimaryCursor black,bright-cyan+F
-# set-face global SecondaryCursor black,bright-blue+F
-# set-face global PrimaryCursorEol black,bright-cyan
-# set-face global SecondaryCursorEol black,bright-blue
+
+set-face global PrimarySelection white,blue+F
+set-face global SecondarySelection black,blue+F
+set-face global PrimaryCursor black,bright-cyan+F
+set-face global SecondaryCursor black,bright-blue+F
+set-face global PrimaryCursorEol black,bright-cyan
+set-face global SecondaryCursorEol black,bright-blue
 
 # # Shades of green/yellow for insert mode.
-# hook global ModeChange (push|pop):.*:insert %{
-#     set-face window PrimarySelection white,green+F
-#     set-face window SecondarySelection black,green+F
-#     set-face window PrimaryCursor black,bright-yellow+F
-#     set-face window SecondaryCursor black,bright-green+F
-#     set-face window PrimaryCursorEol black,bright-yellow
-#     set-face window SecondaryCursorEol black,bright-green
-# }
+hook global ModeChange (push|pop):.*:insert %{
+    set-face window PrimarySelection white,green+F
+    set-face window SecondarySelection black,green+F
+    set-face window PrimaryCursor black,bright-yellow+F
+    set-face window SecondaryCursor black,bright-green+F
+    set-face window PrimaryCursorEol black,bright-yellow
+    set-face window SecondaryCursorEol black,bright-green
+}
 
 # # Undo colour changes when we leave insert mode.
-# hook global ModeChange (push|pop):insert:.* %{
-#     unset-face window PrimarySelection
-#     unset-face window SecondarySelection
-#     unset-face window PrimaryCursor
-#     unset-face window SecondaryCursor
-#     unset-face window PrimaryCursorEol
-#     unset-face window SecondaryCursorEol
-# }
+hook global ModeChange (push|pop):insert:.* %{
+    unset-face window PrimarySelection
+    unset-face window SecondarySelection
+    unset-face window PrimaryCursor
+    unset-face window SecondaryCursor
+    unset-face window PrimaryCursorEol
+    unset-face window SecondaryCursorEol
+}
 
 add-highlighter global/ number-lines -separator ' ' -hlcursor
 
@@ -156,13 +161,13 @@ hook global WinSetOption filetype=diff %{
 map global normal t h
 map global normal <a-t> <a-h>
 map global normal <s-t> <s-h>
-map global normal <c-t> <c-h>
+# map global normal <c-t> <c-h>
 map global goto   t h
 
 map global normal n j
 map global normal <a-n> pagedown
 map global normal <s-n> <s-j>
-map global normal <c-n> <c-j>
+# map global normal <c-n> <c-j>
 map global goto   n b
 map global goto   N j
 map global view   n t
@@ -170,7 +175,7 @@ map global view   n t
 map global normal l k
 map global normal <a-l> pageup
 map global normal <s-l> <s-k>
-map global normal <c-l> <c-k>
+# map global normal <c-l> <c-k>
 map global goto   l t
 map global goto   L k
 map global view   l b
@@ -207,6 +212,7 @@ def -params 1 extend-line-up %{
   }
   exec '<a-;><a-X>'
 }
+
 map global normal <F6> ':extend-line-down %val{count}<ret>'
 map global normal <F8> ':extend-line-up %val{count}<ret>'
 map global normal <F5> <a-h>
@@ -306,18 +312,39 @@ map global normal <space> ,
 #  }
 #}
 map global normal d '<a-|>xclip -i -selection clipboard<ret>'
+map global normal D y
 # Paste
-map global normal P -docstring 'Paste (After)' '<a-!>xclip -out -selection clipboard<ret>'
+map global normal P <a-p>
+map global normal <c-p> -docstring 'Paste (After)' '<a-o>o<esc>|xclip -out -selection clipboard<ret>'
 map global normal p -docstring 'Paste (Before)' '!xclip -out -selection clipboard<ret>'
 map global normal <c-p> -docstring 'Replace' '|xclip -out -selection clipboard<ret>'
 # map global normal , <space>
 #map global user a ': fzf-mode<ret>'
+
+define-command -hidden -override motion-select-word-l %{
+    execute-keys 'aⓏ<esc>'
+    execute-keys ':easy-motion-b<ret>'
+    hook window -once NormalIdle .* %{
+        exec '<esc><a-;> fⓏa<backspace><esc> <a-;>' 
+    }
+}
+
+define-command -hidden -override motion-select-word-r %{
+    execute-keys 'iⓏ<esc>'
+    execute-keys ':easy-motion-w<ret>'
+    hook window -once NormalIdle .* %{
+        exec '<esc> <a-f>Ⓩi<del><esc> <a-;>' 
+    }
+}
+
 map global user <space> "gt: easy-motion-w<ret>"
 map global user n ": easy-motion-j<ret>"
 map global user l ": easy-motion-k<ret>"
 map global user ä ": easy-motion-char<ret>"
 map global user s ": easy-motion-w<ret>"
 map global user t ": easy-motion-b<ret>"
+map global user T ": motion-select-word-l<ret>"
+map global user S ": motion-select-word-r<ret>"
 
 map global normal q ":comment-line<ret>"
 map global normal Q ":comment-block<ret>"
@@ -328,12 +355,12 @@ map global user y ":w<ret>"
 
 declare-user-mode surround
 map global surround ö ':surround<ret>' -docstring 'surround'
-map global surround c ':change-surround<ret>' -docstring 'change'
+map global surround u ':change-surround<ret>' -docstring 'change'
 map global surround g ':delete-surround<ret>' -docstring 'delete'
-map global surround i ':select-surrounding-tag<ret>' -docstring 'select tag'
+map global surround e ':select-surrounding-tag<ret>' -docstring 'select tag'
 map global normal ö ':enter-user-mode surround<ret>'
 # map global normal ö ':surround<ret>'
-# map global normal Ö ':surround-with-tag<ret>'
+# map global sorround h ':surround-with-tag<ret>' -docstring 'surround with tag'
 # map 
 # map global user   <a-l>  ':select-surrounding-tag<ret>'
 # map global user   <c-l>  ':select-surround<ret>'
@@ -343,20 +370,33 @@ map global normal ö ':enter-user-mode surround<ret>'
 # 
 map global user h ':connect run kitty --hold sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> ' 
 map global user i ':connect run kitty <ret> ' 
+map global user e ':evaluate-commands %sh{echo "connect run kitty -d ${kak_buffile%/*}"}<ret>' -docstring 'new terminal @ buffer file' 
 
 hook global WinSetOption filetype=html %{
     set-option buffer formatcmd "run(){ tidy -q --indent yes --indent-spaces %opt{tabstop}  2>/dev/null || true; } && run"
 }
 
 hook global BufSetOption filetype=css %{
-    set-option buffer formatcmd "prettierd --stdin-filepath=%val{buffile}"
+    set-option buffer formatcmd "prettier --stdin-filepath=%val{buffile}"
 }
 
+# hook global BufSetOption filetype=javascript %{
+    # set-option buffer formatcmd "prettier --stdin-filepath=%val{buffile}"
+    # set-option buffer formatcmd 'prettier --stdin --semi false --single-quote --jsx-bracket-same-line --trailing-comma all'
+# }
+
 hook global WinSetOption filetype=javascript %{
+  set-option buffer formatcmd "prettier --stdin-filepath=%val{buffile}"
+  # set window formatcmd 'prettier --stdin --semi false --single-quote --jsx-bracket-same-line --trailing-comma all'
   set buffer lintcmd 'eslint --config .eslintrc.js --format=node_modules/eslint-formatter-kakoune'
   lint-enable
   lint
 }
+
+hook global WinSetOption filetype=ecmascript %{
+    set window formatcmd 'prettier --stdin --semi false --single-quote --jsx-bracket-same-line --trailing-comma all'
+}
+
 # hook global WinSetOption filetype=javascript %{
 # 	set buffer lintcmd './node_modules/.bin/eslint --format=node_modules/eslint-formatter-kakoune -c .eslintrc.js'
 # 	lint-enable
@@ -369,11 +409,31 @@ hook global WinSetOption filetype=javascript %{
 define-command -hidden -override move-line-down %{
     exec <a-x> d g l p j g l 
 }
+define-command -hidden -override move-selection-line-down %{
+    exec i Ⓩ  <esc> H d j P h <a-f> Ⓩ i <del> <esc> 
+}
 define-command -hidden -override move-line-up %{
     exec <a-x> d k P k 
 }
-map global normal <c-n> ': move-line-down<ret>'
-map global normal <c-l> ': move-line-up<ret>'
+define-command -hidden -override move-selection-line-up %{
+    exec i Ⓩ <esc> H d k P h <a-f> Ⓩ i <del> <esc> 
+}
+define-command -hidden -override move-selection-word-right %{
+    exec d W <a-p>
+}
+define-command -hidden -override move-selection-word-left %{
+    exec d B <a-P>
+}
+
+map global normal 7 f
+map global normal 8 <a-f>
+map global normal 9 P
+
+
+map global normal ⓝ ': move-selection-line-down<ret>'
+map global normal ⓛ ': move-selection-line-up<ret>'
+map global normal ⓣ ': move-selection-word-left<ret>'
+map global normal ⓢ ': move-selection-word-right<ret>'
 
 
 map global normal j     ": phantom-selection-add-selection<ret>"
@@ -382,6 +442,9 @@ map global normal <s-j> ": phantom-selection-iterate-next<ret>"
 map global normal <s-x> ": phantom-selection-iterate-prev<ret>"
 
 map global normal y ': enter-user-mode selectors<ret>' -docstring 'selectors'
+map global selectors 'y' '<esc>:rainbow-enable-window<ret>' -docstring 'enable rainbow'
+map global selectors 'o' '<esc>:rainbow-disable-window<ret>' -docstring 'disable rainbow'
+
 map global selectors 'q' '*%s<ret>' -docstring 'select all'
 
 map global selectors 'n' '<a-i>' -docstring 'select inside object <a-i>'

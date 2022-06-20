@@ -23,6 +23,7 @@
 
 
 (defalias
+	win (tap-next-release KeyMenu lmet)
 	ss (tap-next-release S-spc lsft)
 	wt   (layer-toggle word)
 	wst  (layer-toggle wordshift)
@@ -47,16 +48,17 @@
  .: (tap-hold-next-release 125 . : )
  == (tap-hold-next-release 125 = #(= > spc) )
  =>  #(= > spc)
+ -> (tap-hold-next-release 125 - #(- > spc) ) 
 )
 
 
 (deflayer hoeloe
   caps  f1  @tyl  f3   f4   f5   f6   f7   f8   f9   f10  f11  f12       
   1     1    2    3    4    5    6    7    8    9    0    1    grv   bspc
-  S-esc tab  y   @oth  ä    b    c    f    l    p    z    1    1     ret
-  @ecth h   @ith @eth  a    g    d    t    n    s   @rth  1    1
+  S-esc tab  y   @oth  ä    b    c    f    l    p    z    @win    1     ret
+  @ecth h   @ith @eth  a    g    d    t    n    s   @rth  @win    1
   lctl  q    å    ö    u    k    x    j    m    v    w    x    rsft
-  lalt lmet @wt           @ss          @nt  @st  rctl       
+  lalt @win @wt           @ss          @nt  @st  rctl       
 )
 
 (deflayer typing 
@@ -65,7 +67,7 @@
   S-esc tab  y    o    ä    b    c    f    l    p    z    1    1     ret
   @ecth h    i    e    a    g    d    t    n    s    r    1    1
   lctl  q    å    ö    u    k    x    j    m    v    w    x    rsft
-  lalt lmet @wt           @ss          @nt  @st  rctl       
+  lalt @win @wt           @ss          @nt  @st  rctl       
 )
 
 
@@ -136,7 +138,7 @@
   _    _    _    _    _    _    _    _    _    _    _    _    _   
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _  C-A-y C-A-o C-A-ä _    _    _    C-f8   _    _    _    _    _
-  _  C-A-h C-A-i C-A-e C-A-a C-A-a C-A-g C-f5 C-f6 C-f7 C-A-r  _    _
+  _  C-A-h C-A-i C-A-e C-A-a C-A-g C-A-d C-f5 C-f6 C-f7 C-A-r  _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _              _              _    _    _ 
 )
@@ -163,7 +165,7 @@
   _    _    _    _    _    _    _    _    _    _    _    _    _   
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    ^    *    +    %    _    4    5    6    _    _    _    _  
-  _   \_    -   @.:  @,;   ?    0    1    2    3    _    _    _
+  _   \_    @->  @.:  @,;   ?    0    1    2    3    _    _    _
   _    _    _    &    !   @==   _     _   7    8    9    _    _    
   _    _    _              @nst              _    _    _ 
 )

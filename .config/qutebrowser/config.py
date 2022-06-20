@@ -31,7 +31,7 @@ config.load_autoconfig(True)
 ## session which was last loaded. This behavior can be customized via the
 ## `session.default_name` setting.
 ## Type: Bool
-# c.auto_save.session = False
+c.auto_save.session = True
 
 ## Backend to use to display websites. qutebrowser supports two different
 ## web rendering engines / backends, QtWebEngine and QtWebKit (not
@@ -63,7 +63,7 @@ config.load_autoconfig(True)
 ## the mapping is ignored.
 ## Type: Dic
 
-c.auto_save.session = True
+# c.auto_save.session = True
 
 def remap_in_all_modes(remappings):
     for mode in c.bindings.default:
@@ -720,7 +720,10 @@ c.colors.webpage.bg = 'black'
 
 ## Enable the ad/host blocker
 ## Type: Bool
-# c.content.blocking.enabled = True
+c.content.blocking.enabled = True
+
+# ":set content.blocking.method adblock",
+# config.set("content.blocking.method", "adblock")
 
 ## List of URLs to host blocklists for the host blocker.  Only used when
 ## the simple host-blocker is used (see `content.blocking.method`).  The
@@ -745,7 +748,7 @@ c.colors.webpage.bg = 'black'
 ##   - adblock: Use Brave's ABP-style adblocker
 ##   - hosts: Use hosts blocking
 ##   - both: Use both hosts blocking and Brave's ABP-style adblocker
-# c.content.blocking.method = 'auto'
+c.content.blocking.method = 'auto'
 
 ## A list of patterns that should always be loaded, despite being blocked
 ## by the ad-/host-blocker. Local domains are always exempt from
@@ -1548,7 +1551,7 @@ c.hints.chars = 'hieagdtnsr'
 ##   - qt-quick: Tell Qt Quick to use a software renderer instead of OpenGL. (`QT_QUICK_BACKEND=software`)
 ##   - chromium: Tell Chromium to disable GPU support and use Skia software rendering instead. (`--disable-gpu`)
 ##   - none: Don't force software rendering.
-c.qt.force_software_rendering = 'qt-quick'
+# c.qt.force_software_rendering = 'qt-quick'
 
 ## Turn on Qt HighDPI scaling. This is equivalent to setting
 ## QT_AUTO_SCREEN_SCALE_FACTOR=1 or QT_ENABLE_HIGHDPI_SCALING=1 (Qt >=
@@ -1637,7 +1640,7 @@ c.qt.force_software_rendering = 'qt-quick'
 
 ## Load a restored tab as soon as it takes focus.
 ## Type: Bool
-# c.session.lazy_restore = False
+c.session.lazy_restore = True
 
 ## Languages to use for spell checking. You can check for available
 ## languages and install dictionaries using scripts/dictcli.py. Run the
@@ -1869,12 +1872,12 @@ c.qt.force_software_rendering = 'qt-quick'
 ##   - never: Always hide the tab bar.
 ##   - multiple: Hide the tab bar if only one tab is open.
 ##   - switching: Show the tab bar when switching tabs.
-# c.tabs.show = 'always'
+c.tabs.show = 'never'
 
 ## Duration (in milliseconds) to show the tab bar before hiding it when
 ## tabs.show is set to 'switching'.
 ## Type: Int
-# c.tabs.show_switching_delay = 800
+c.tabs.show_switching_delay = 2200
 
 ## Open a new window for every tab.
 ## Type: Bool
@@ -2060,6 +2063,7 @@ c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 # config.bind('<Ctrl-PgDown>', 'tab-next')
 # config.bind('<Ctrl-PgUp>', 'tab-prev')
 # config.bind('<Ctrl-Q>', 'quit')
+config.bind('<Ctrl-Escape>', 'spawn --userscript sessionsaver.py')
 # config.bind('<Ctrl-Return>', 'selection-follow -t')
 # config.bind('<Ctrl-Shift-N>', 'open -p')
 # config.bind('<Ctrl-Shift-T>', 'undo')
@@ -2134,7 +2138,7 @@ c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 # config.bind('gi', 'hint inputs --first')
 # config.bind('gm', 'tab-move')
 # config.bind('go', 'set-cmd-text :open {url:pretty}')
-# config.bind('gt', 'set-cmd-text -s :tab-select')
+config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('gu', 'navigate up')
 # config.bind('h', 'scroll left')
 # config.bind('i', 'mode-enter insert')
@@ -2333,5 +2337,6 @@ c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 config.bind(',k', 'spawn mpv {url}')
 config.bind('k', 'hint links spawn umpv {hint-url}')
 config.bind(';x', 'hint --rapid links spawn umpv {hint-url}')
-#config.source('qutewal/qutewal.py')
+config.source('qutewal/qutewal.py')
 config.set("colors.webpage.darkmode.enabled", True)
+
