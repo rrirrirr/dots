@@ -13,6 +13,7 @@ font pango:monospace 8
 # gaps left 0
 # smart_gaps off
 # smart_borders on
+# default_border pixel 100
 
 new_window none
 new_float none
@@ -33,8 +34,8 @@ set $c9 #a089a7
 
 # class                 border  backgr. text indicator child_border
 client.focused          $c1     $c1     $c8  $c1       $bg
-client.focused_inactive $bg     $bg     $c8  $c1       $bg
-client.unfocused        $bg     $bg     $c8  $c1       $bg
+client.focused_inactive $c1     $bg     $c8  $c1       $bg
+client.unfocused        $c1     $bg     $c8  $c1       $bg
 client.urgent           $bg     $bg     $c8  $c1       $bg
 client.placeholder      $bg     $bg     $c8  $c1       $bg
 
@@ -93,11 +94,45 @@ bindsym $mod+Shift+Escape [floating] kill
 # Start dmenu (a program launcher).
 # bindsym $mod+d exec dmenu_run
 
+
+bindsym $mod+Control+f      exec --no-startup-id i3fyra --float
+# making a floating window tiled with the keybinding
+# above will automatically enable the i3fyra layout
+# on the active workspace.
+
+# splitsizes in the i3fyra layout
+# -----------------------------------------------
+set $layout 'AB=-350 AC=220 BD=252'
+
+# by executing below command with i3 the layout
+# will be configured before it is created
+exec --no-startup-id i3fyra --layout $layout
+
+# use this keybinding to restore the layout
+bindsym $mod+Shift+f exec --no-startup-id i3fyra --layout $layout       
+
+
+bindsym $mod+Tab              exec --no-startup-id i3flip next
+bindsym $mod+Shift+Tab        exec --no-startup-id i3flip perv
+
+
+
+bindsym $mod+t            exec --no-startup-id i3viswiz left
+bindsym $mod+n            exec --no-startup-id i3viswiz down
+bindsym $mod+l              exec --no-startup-id i3viswiz up
+bindsym $mod+s           exec --no-startup-id i3viswiz right
+
+
+bindsym $mod+Shift+t      exec --no-startup-id i3Kornhe move --speed 0 left
+bindsym $mod+Shift+n      exec --no-startup-id i3Kornhe move --speed 0 down
+bindsym $mod+Shift+l        exec --no-startup-id i3Kornhe move --speed 0 up
+bindsym $mod+Shift+s     exec --no-startup-id i3Kornhe move --speed 0 right
+
 # change focus
-bindsym $mod+t                       focus left
-bindsym $mod+n                       focus down
-bindsym $mod+l                       focus up
-bindsym $mod+s                       focus right
+# bindsym $mod+t                       focus left
+# bindsym $mod+n                       focus down
+# bindsym $mod+l                       focus up
+# bindsym $mod+s                       focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left                    focus left
@@ -106,10 +141,10 @@ bindsym $mod+Up                      focus up
 bindsym $mod+Right                   focus right
 
 # move                       focused window
-bindsym $mod+Shift+t                 move left
-bindsym $mod+Shift+n                 move down
-bindsym $mod+Shift+l                move up
-bindsym $mod+Shift+s                 move right
+# bindsym $mod+Shift+t                 move left
+# bindsym $mod+Shift+n                 move down
+# bindsym $mod+Shift+l                move up
+# bindsym $mod+Shift+s                 move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left              move left
@@ -132,11 +167,12 @@ bindsym $mod+o                       fullscreen toggle
 #bindsym $mod+e                       layout toggle split
 
 # toggle tiling / floating
-for_window [floating] move position center
+floating_maximum_size 0 x 800
+# for_window [floating] move position center
 bindsym $mod+Shift+space             floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space                   focus mode_toggle
+# bindsym $mod+space                   focus mode_toggle
 
 # focus the parent container
 #bindsym $mod+a                       focus parent
@@ -262,6 +298,15 @@ mode "Primary" {
     bindsym $down            exec --no-startup-id i3viswiz down
     bindsym $up              exec --no-startup-id i3viswiz up
     bindsym $right           exec --no-startup-id i3viswiz right
+
+
+    bindsym Control+$left            exec --no-startup-id i3fyra --move left
+    bindsym Control+$down            exec --no-startup-id i3fyra --move down
+    bindsym Control+$up              exec --no-startup-id i3fyra --move up
+    bindsym Control+$right           exec --no-startup-id i3fyra --move right
+
+    bindsym Tab              exec --no-startup-id i3flip next
+    bindsym Shift+Tab        exec --no-startup-id i3flip perv
 
     # move                       focused window
     bindsym Shift+t                 move left
@@ -417,7 +462,6 @@ mode "Secondary" {
 
     bindsym r nop
 
-    bindsym t nop
     bindsym y nop
 
     bindsym i nop
@@ -426,6 +470,25 @@ mode "Secondary" {
 
     bindsym bracketleft nop
     bindsym bracketright nop
+
+
+    bindsym t              exec --no-startup-id i3Kornhe size --speed 30 left
+    bindsym n              exec --no-startup-id i3Kornhe size --speed 30 down
+    bindsym l              exec --no-startup-id i3Kornhe size --speed 30 up
+    bindsym s              exec --no-startup-id i3Kornhe size --speed 30 right
+
+    bindsym Shift+t        exec --no-startup-id i3Kornhe size --speed 5 left
+    bindsym Shift+n        exec --no-startup-id i3Kornhe size --speed 5 down
+    bindsym Shift+l        exec --no-startup-id i3Kornhe size --speed 5 up
+    bindsym Shift+s        exec --no-startup-id i3Kornhe size --speed 5 right
+
+    bindsym Control+t				exec --no-startup-id i3viswiz left
+    bindsym Control+n				exec --no-startup-id i3viswiz down
+    bindsym Control+l				exec --no-startup-id i3viswiz up
+    bindsym Control+s				exec --no-startup-id i3viswiz right
+
+
+
 
     # Select an audio output.
     # bindsym a  $default, exec  --no-startup-id pactl move-sink-input \
@@ -452,7 +515,6 @@ mode "Secondary" {
 
     bindsym v nop
 
-    bindsym n nop
 
     bindsym comma nop
     bindsym period nop
@@ -481,13 +543,14 @@ mode "Secondary" {
 # for_window [class="kitty"] border pixel 0
 # for_window [title="bar"] gaps outer 22
 
-hide_edge_borders vertical
+# hide_edge_borders vertical
 
 for_window [con_mark="ncmp"] floating enable
 
 for_window [class="mpv"] floating enable, move scratchpad, move scratchpad, move absolute position 110 240, resize set 580 580, scratchpad show
 for_window [class="kitty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
-for_window [class="kitty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 280 220, resize set 1000 420, scratchpad show
+for_window [class="kitty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 180 220, resize set 1200 680, scratchpad show
+for_window [class="kitty" instance="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
 for_window [class="kitty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
 for_window [class="st" instance="time"] floating enable, move absolute position 450 120, resize set 550 250, scratchpad show
 
@@ -516,7 +579,7 @@ bindsym $mod+shift+h exec rofi -modi shortcut:~/scripts/i3/i3-shortcut-help.sh -
 # bindsym $mod+Shift+j				 exec kitty -o background_opacity=1.0 --name spotify-tui -e spotify-tui;  exec spotifyd --no-daemon
 
 ## Launch/Toggle // Spotify //  + j ## 
-bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- kitty -o background_opacity=1.0 --name spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
+bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- kitty --name spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
 bindsym $mod+shift+j 			exec --no-startup-id pkill spotifyd; exec --no-startup-id spotifyd
 ## Launch/Toggle // MPV //  + b ## 
 bindsym $mod+b 						exec --no-startup-id i3run -c mpv -- mpv
@@ -529,8 +592,8 @@ bindsym $mod+x 			     [con_mark="signal"] scratchpad show
 bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
 # bindsym $mod+q 						exec qutebrowser
 bindsym $mod+q 						exec --no-startup-id i3run -i qutebrowser -e qutebrowser
-bindsym $mod+Return                  exec kitty -o background_opacity=0.0
-bindsym $mod+Shift+Return            exec kitty -o background_opacity=0.0 -e kak $(fzf)
+bindsym $mod+Return                  exec kitty 
+bindsym $mod+Shift+Return            exec kitty -e kak $(fzf)
 # bindsym Shift+Escape                 kill
 # bindsym Mod1+e                       exec rofi -show drun
 # bindsym Control+Mod1+o               exec --no-startup-id i3run --summon --instance fif -- kitty --name fif -o background_opacity=1.0 -e nnn
@@ -542,7 +605,7 @@ bindsym $mod+Shift+w                 exec flash_window
 #bindsym $mod+l                       exec rofi-pass
 #bindsym $mod+m 			   [con_mark="ncmp"]  exec urxvt -e ncmpcpp
 #bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
-bindsym $mod+Shift+o 			     exec kitty --name alsamixer -o background_opacity=1.0 -e pulsemixer
+bindsym $mod+Shift+o 			     exec kitty --name alsamixer -e pulsemixer
 bindsym $mod+p						 exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 bindsym $mod+Shift+p                 exec kitty --name xcolor -e --hold xcolor
 bindsym $mod+Shift+x				 exec kitty --name scli -e scli -u +46702126119 -n 
@@ -555,7 +618,7 @@ bindsym $mod+Shift+x				 exec kitty --name scli -e scli -u +46702126119 -n
 ## Mark // Code // r + g 
 bindsym Control+Mod1+g 						exec --no-startup-id i3run --instance code-main -- sh ~/scripts/kakoune/start-code-env.sh
 
-bindsym Control+Mod1+h				exec kitty -o background_opacity=0.0
+bindsym Control+Mod1+h				exec kitty 
 bindsym Control+Mod1+i				fullscreen toggle
 bindsym Control+Mod1+e				exec rofi -show drun	
 bindsym Mod1+Control+Shift+e  exec rofi -show window
@@ -608,7 +671,7 @@ bindsym Control+Shift+Mod1+a	exec --no-startup-id qutebrowser
 #bindsym $mod+e                       layout toggle split
 
 # toggle tiling / floating
-for_window [floating] move position center
+# for_window [floating] move position center
 # bindsym $mod+Shift+space             floating toggle
 
 # change focus between tiling / floating windows
@@ -696,7 +759,7 @@ bindsym Shift+XF86AudioLowerVolume exec --no-startup-id xbacklight -dec 10
 bindsym Shift+XF86AudioMute exec --no-startup-id pkill -USR1 redshift
 
 # deamonise
-exec --no-startup-id picom  
+exec --no-startup-id picom --experimental-backends 
 exec --no-startup-id redshift -l 59:18
 exec --no-startup-id dunst
 #exec --no-startup-id conky -c clock--date--weather__big/.conkyrc
@@ -705,7 +768,6 @@ exec --no-startup-id feh --bg-fill Bilder/G3back.png
 #exec --no-startup-id ~/scripts/mpd-fifo
 
 exec --no-startup-id wal -n -i ~/Bilder/blade_runner_2049_poster_by_xlzipx_dbom4d6-fullview.jpg
-exec --no-startup-id polybar mybar
 
 #exec xdotool search -name "polybar-simple"|head -1 >/tmp/pbar
 #exec ~/scripts/hidebar
@@ -717,5 +779,6 @@ exec --no-startup-id kmonad .config/kmonad/test.kbd
 exec --no-startup-id sh scripts/rebind-trackpad-buttons.sh
 exec --no-startup-id pipewire
 exec --no-startup-id pipewire-pulse
+exec --no-startup-id polybar mybar
 
 

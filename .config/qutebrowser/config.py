@@ -520,7 +520,8 @@ c.bindings.commands['normal'] = {
 ## Background color for webpages if unset (or empty to use the theme's
 ## color).
 ## Type: QtColor
-c.colors.webpage.bg = 'black'
+# c.colors.webpage.bg = 'black'
+# c.colors.webpage.bg = '#151515'
 
 ## Which algorithm to use for modifying how colors are rendered with
 ## darkmode. The `lightness-cielab` value was added with QtWebEngine 5.14
@@ -2339,4 +2340,7 @@ config.bind('k', 'hint links spawn umpv {hint-url}')
 config.bind(';x', 'hint --rapid links spawn umpv {hint-url}')
 config.source('qutewal/qutewal.py')
 config.set("colors.webpage.darkmode.enabled", True)
+
+# c.colors.webpage.bg = 'black'
+c.colors.webpage.bg = '#151515'
 

@@ -25,7 +25,8 @@
 (defalias
 	win (tap-next-release KeyMenu lmet)
 	ss (tap-next-release S-spc lsft)
-	wt   (layer-toggle word)
+;;	wt   (layer-toggle word)
+  wt (tap-next-release y (layer-toggle word))
 	wst  (layer-toggle wordshift)
 	nt   (layer-toggle numbers)
 	nst   (layer-toggle numbersshift)

@@ -111,8 +111,10 @@ SAVEHIST=10000
 setopt appendhistory
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS="--ansi"
+export FZF_DEFAULT_OPTS="--ansi --layout=reverse --multi"
+# export FZF_DEFAULT_COMMAND="fd --type file --hidden -I"
 export FZF_DEFAULT_COMMAND="fd --type file --hidden -I --exclude .git --exclude void-packages --exclude node_modules"
+
 
 # source $ZSH/oh-my-zsh.sh
 source ~/scripts/zsh/arrow.zsh-theme
@@ -216,6 +218,8 @@ alias f:='KK kcr fzf files'
 alias :g='kcr fzf grep'
 alias g:='KK kcr fzf grep'
 
+alias kcd='kcr send execute-keys "cd $PWD"'
+
 
 alias vi='nvim'
 alias gv='gvim -v'
@@ -236,6 +240,11 @@ alias -g Z='`fzf`'
 alias nk="i3-msg move left && i3-msg resize set width 200px && nnn"
 # alias ntree ="sh -c 'i3-msg move left && i3-msg resize set width 200px && nnn'"
 alias http='python3 -m http.server'
+alias hide='kitty @ set-window-title h'
+alias unhide='kitty @ set-window-title v'
+alias visible='kitty @ set-window-title viz'
+alias batt='bat -p --paging=always'
+
 
 alias l="exa -l --no-permissions"
 alias la="exa -la --no-permissions"
