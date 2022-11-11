@@ -29,6 +29,7 @@
   wt (tap-next-release y (layer-toggle word))
 	wst  (layer-toggle wordshift)
 	nt   (layer-toggle numbers)
+	ntr   (tap-next-release ret (layer-toggle numbers))
 	nst   (layer-toggle numbersshift)
 	st   (layer-toggle symbols)
 	ecth (tap-next-release esc (layer-toggle movement))
@@ -39,6 +40,13 @@
 	oth  (tap-next-release o (layer-toggle view))
 	rth  (tap-next-release r (layer-toggle cursor))
 	tnh  (tap-hold-next-release 2000 x lsft)
+
+	spe (layer-delay 500 speed)
+
+
+;;  lft t
+  lft (around t (layer-delay 500 speed))
+  rgt (around s (layer-delay 500 speed))
 
 	tyl (layer-switch typing)
 	hol (layer-switch hoeloe)
@@ -80,6 +88,17 @@
   _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _              _              _    _    _ 
 )
+
+(deflayer speed
+  _    _    _    _    _    _    _    _    _    _    _    _    _   
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    u    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _ 
+)
+
+
 
 (deflayer select
   _    _    _    _    _    _    _    _    _    _    _    _    _   

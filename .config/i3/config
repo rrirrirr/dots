@@ -13,7 +13,7 @@ font pango:monospace 8
 # gaps left 0
 # smart_gaps off
 # smart_borders on
-# default_border pixel 100
+# default_border pixel 1
 
 new_window none
 new_float none
@@ -44,6 +44,8 @@ client.background       $bg
 # PROTIP: You can also dynamically set dmenu's colors this way:
 # bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
 workspace_auto_back_and_forth no
+
+set $term "alacritty msg create-window --working-directory ~/ || alacritty"
 
 
 set $left  t
@@ -127,6 +129,13 @@ bindsym $mod+Shift+t      exec --no-startup-id i3Kornhe move --speed 0 left
 bindsym $mod+Shift+n      exec --no-startup-id i3Kornhe move --speed 0 down
 bindsym $mod+Shift+l        exec --no-startup-id i3Kornhe move --speed 0 up
 bindsym $mod+Shift+s     exec --no-startup-id i3Kornhe move --speed 0 right
+
+# bindsym $mod+Shift+$left            exec --no-startup-id i3fyra --move left
+# bindsym $mod+Shift+$down            exec --no-startup-id i3fyra --move down
+# bindsym $mod+Shift+$up              exec --no-startup-id i3fyra --move up
+# bindsym $mod+Shift+$right           exec --no-startup-id i3fyra --move right
+
+
 
 # change focus
 # bindsym $mod+t                       focus left
@@ -264,11 +273,11 @@ mode "resize" {
 # I have used 'xcape' to bind Super_L to Menu for the left hand.
 # Pressing cycles through the three modes. Def->Pri->Sec->Def.
 bindsym XF86MenuKB $primary
-bindsym Print $primary
+# bindsym Print $primary
 
 # KP_Insert is a design decision please do not change.
 # Command prompt in one keypress. Faciltates 3 digit commands.
-bindsym Control+Print $i3cmdprompt menu 4
+# bindsym Control+Print $i3cmdprompt menu 4
 
 # "HJKL" replaces "JKL:" because I'm used to "vi","b" can replace "h"
 # (for horizontal) because they look similar and it's adjacent to "v"
@@ -437,7 +446,7 @@ mode "Primary" {
 
     # Pressing cycles through the three modes. Pri->Sec->Def->Pri.
     bindsym XF86MenuKB $secondary
-    bindsym Print $secondary
+    # bindsym Print $secondary
 }
 
 # -*- Mode: Shell-script -*-
@@ -522,7 +531,7 @@ mode "Secondary" {
 
     # Pressing cycles through the three modes. Sec->Def->Pri->Sec.
     bindsym XF86MenuKB $default
-    bindsym Print $default
+    # bindsym Print $default
 }
 
 #
@@ -540,28 +549,36 @@ mode "Secondary" {
 
 
 
-# for_window [class="kitty"] border pixel 0
+# for_window [class="alacritty"] border pixel 0
 # for_window [title="bar"] gaps outer 22
 
 # hide_edge_borders vertical
+mouse_warping none
 
+for_window [class="^.*"] border pixel 1
 for_window [con_mark="ncmp"] floating enable
 
-for_window [class="mpv"] floating enable, move scratchpad, move scratchpad, move absolute position 110 240, resize set 580 580, scratchpad show
-for_window [class="kitty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
-for_window [class="kitty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 180 220, resize set 1200 680, scratchpad show
-for_window [class="kitty" instance="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
-for_window [class="kitty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+for_window [class="mpv"] floating enable, move absolute position 110 240, resize set 580 580
+for_window [class="imv"] floating enable, move absolute position 1010 240, resize set 380 380
+no_focus [class="imv"]
+
+for_window [class="Alacritty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
+for_window [class="Alacritty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 180 220, resize set 1200 680, scratchpad show
+# for_window [class="Alacritty" instance="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
+for_window [class="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
+# for_window [class="Alacritty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+for_window [class="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+# for_window [class="Alacritty" instance="fzf"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show, focus
 for_window [class="st" instance="time"] floating enable, move absolute position 450 120, resize set 550 250, scratchpad show
 
-for_window [class="kitty" instance="code-tree"] move left, resize set width 200 px
-for_window [class="kitty" instance="code-side"] move right
-for_window [class="kitty" instance="code-main"] resize set width 1000 px
+for_window [class="Alacritty" instance="code-tree"] move left, resize set width 200 px
+for_window [class="Alacritty" instance="code-side"] move right
+for_window [class="Alacritty" instance="code-main"] resize set width 1000 px
 
 for_window [class="st" instance="wttr"] floating enable, move scratchpad, move absolute position 280 120, resize set 770 550, scratchpad show
-for_window [class="kitty" instance="gotop"] floating enable, move scratchpad, move absolute position 380 320, resize set 770 350, scratchpad show
-for_window [class="kitty" instance="scli"] mark "signal", floating enable, move scratchpad, move absolute position 280 140, resize set 1000 580, scratchpad show
-for_window [class="kitty" instance="xcolor"] floating enable, move scratchpad, move absolute position 380 320, resize set 270 150, scratchpad show
+for_window [class="Alacritty" instance="gotop"] floating enable, move scratchpad, move absolute position 380 320, resize set 770 350, scratchpad show
+for_window [class="Alacritty" instance="scli"] mark "signal", floating enable, move scratchpad, move absolute position 280 140, resize set 1000 580, scratchpad show
+for_window [class="Alacritty" instance="xcolor"] floating enable, move scratchpad, move absolute position 380 320, resize set 270 150, scratchpad show
 
 # no_focus [class="mpv"]
 
@@ -576,10 +593,10 @@ floating_modifier $mod
 bindsym $mod+shift+h exec rofi -modi shortcut:~/scripts/i3/i3-shortcut-help.sh -show shortcut
 
 # bindsym $mod+j   a       [con_mark="(music|music2)"]  scratchpad show; focus right
-# bindsym $mod+Shift+j				 exec kitty -o background_opacity=1.0 --name spotify-tui -e spotify-tui;  exec spotifyd --no-daemon
+# bindsym $mod+Shift+j				 exec alacritty -o background_opacity=1.0 --class spotify-tui -e spotify-tui;  exec spotifyd --no-daemon
 
 ## Launch/Toggle // Spotify //  + j ## 
-bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- kitty --name spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
+bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- alacritty --class spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
 bindsym $mod+shift+j 			exec --no-startup-id pkill spotifyd; exec --no-startup-id spotifyd
 ## Launch/Toggle // MPV //  + b ## 
 bindsym $mod+b 						exec --no-startup-id i3run -c mpv -- mpv
@@ -592,40 +609,41 @@ bindsym $mod+x 			     [con_mark="signal"] scratchpad show
 bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
 # bindsym $mod+q 						exec qutebrowser
 bindsym $mod+q 						exec --no-startup-id i3run -i qutebrowser -e qutebrowser
-bindsym $mod+Return                  exec kitty 
-bindsym $mod+Shift+Return            exec kitty -e kak $(fzf)
+bindsym $mod+Return                  exec alacritty 
+bindsym $mod+Shift+Return            exec alacritty -e kak $(fzf)
 # bindsym Shift+Escape                 kill
 # bindsym Mod1+e                       exec rofi -show drun
-# bindsym Control+Mod1+o               exec --no-startup-id i3run --summon --instance fif -- kitty --name fif -o background_opacity=1.0 -e nnn
+# bindsym Control+Mod1+o               exec --no-startup-id i3run --summon --instance fif -- alacritty --class fif -o background_opacity=1.0 -e nnn
 bindsym Control+$mod+t       				 exec st -n time -e tty-clock
 bindsym Control+$mod+w               exec st -n wttr -f 'Liberation Mono:size=8' -e sh -c 'curl -s sv.wttr.in/Stockholm && exec zsh'
-#bindsym $mod+u                      exec kitty --name gotop -e gotop  
+#bindsym $mod+u                      exec alacritty --class gotop -e gotop  
 # bindsym $mod+Shift+x                 exec networkmanager_dmenu
 bindsym $mod+Shift+w                 exec flash_window
 #bindsym $mod+l                       exec rofi-pass
 #bindsym $mod+m 			   [con_mark="ncmp"]  exec urxvt -e ncmpcpp
 #bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
-bindsym $mod+Shift+o 			     exec kitty --name alsamixer -e pulsemixer
+bindsym $mod+Shift+o 			     exec alacritty --class alsamixer -e pulsemixer
 bindsym $mod+p						 exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
-bindsym $mod+Shift+p                 exec kitty --name xcolor -e --hold xcolor
-bindsym $mod+Shift+x				 exec kitty --name scli -e scli -u +46702126119 -n 
+bindsym $mod+Shift+p                 exec alacritty --class xcolor -e --hold xcolor
+bindsym $mod+Shift+x				 exec alacritty --class scli -e scli -u +46702126119 -n 
 
 #bindsym $mod+Shift+m exec urxvt -name ncmpcpp -e ncmpcpp;  exec ~/.local/bin/bum
 
-# bindsym Print									exec rofi-screenshot
+bindsym Print									exec rofi-screenshot
 
 
 ## Mark // Code // r + g 
-bindsym Control+Mod1+g 						exec --no-startup-id i3run --instance code-main -- sh ~/scripts/kakoune/start-code-env.sh
+bindsym Control+Mod1+g		exec --no-startup-id i3run --instance code-main -- sh ~/scripts/kakoune/start-code-env.sh
+bindsym $mod+y		exec --no-startup-id ~/scripts/rofi-window.sh
 
-bindsym Control+Mod1+h				exec kitty 
+bindsym Control+Mod1+h				exec $term 
 bindsym Control+Mod1+i				fullscreen toggle
 bindsym Control+Mod1+e				exec rofi -show drun	
 bindsym Mod1+Control+Shift+e  exec rofi -show window
 bindsym $mod+m 							 exec rofi -show window
 # bindsym Control+Mod1+a				exec qutebrowser
-bindsym Control+Mod1+a				exec --no-startup-id i3run -i qutebrowser -e qutebrowser
-bindsym Control+Shift+Mod1+a	exec --no-startup-id qutebrowser
+bindsym Control+Mod1+a				exec --no-startup-id i3run -i qutebrowser -e qb
+bindsym Control+Shift+Mod1+a	exec --no-startup-id qb
 
 # bindsym Control+Mod1+g				kill
 
@@ -778,7 +796,7 @@ exec --no-startup-id greenclip daemon
 exec --no-startup-id kmonad .config/kmonad/test.kbd
 exec --no-startup-id sh scripts/rebind-trackpad-buttons.sh
 exec --no-startup-id pipewire
-exec --no-startup-id pipewire-pulse
+# exec --no-startup-id pipewire-pulse
 exec --no-startup-id polybar mybar
 
 

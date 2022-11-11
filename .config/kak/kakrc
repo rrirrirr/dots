@@ -7,6 +7,14 @@ plug-chain "https://github.com/crizan/kak-rainbower" %{
 } plug "Delapouite/kakoune-text-objects" %{
 } plug "https://github.com/maximbaz/restclient.kak" %{
 } plug "https://github.com/h-youhei/kakoune-surround" %{
+}plug "caksoylar/kakoune-smooth-scroll" config %{
+# hook global WinCreate .* %{ hook -once window (?!\*plug\*).* smooth-scroll-enable }
+  set-option global scroll_keys_normal <pageup> <pagedown>  
+  hook global WinCreate [^*].* %{
+      hook -once window WinDisplay .* %{
+          smooth-scroll-enable
+      }
+  }
 } plug "alexherbo2/auto-pairs.kak" %{
 	enable-auto-pairs
   evaluate-commands %sh{ colorcol }
@@ -52,17 +60,40 @@ plug-chain "https://github.com/crizan/kak-rainbower" %{
 } plug "kakounedotcom/prelude.kak" %{
 }
 
+define-command -override alacritty-fzf -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --class=fzf --working-directory "$PWD" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+define-command -override alacritty-hold -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --hold --working-directory "$PWD" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+
+define-command -override alacritty-buffer -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --working-directory "${kak_buffile%/*}" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+
+
+
+
 set-option global fzf_terminal_command 'terminal kak -c %val{session} -e "%arg{@}"'
 set-option global ui_options terminal_status_on_top=true
 
 define-command lsp-restart %{ lsp-stop; lsp-start }
 
 eval %sh{kak-lsp --kakoune -s $kak_session --config /home/utter/.config/kak-lsp.toml}
-hook global WinSetOption filetype=(python|html|javascript|typescript|css|haskell) %{
+hook global WinSetOption filetype=(python|html|javascript|typescript|css|haskell|svelte) %{
     lsp-enable-window
-    # lsp-auto-hover-enable hover
-    # lsp-auto-hover-insert-mode-enable hover
-    # set global lsp_hover_anchor true
+    lsp-auto-hover-enable hover
+    lsp-auto-hover-insert-mode-enable hover
+    set global lsp_hover_anchor true
 }
 # plug "kakounedotcom/connect.kak"
 # source "~/.config/kak/plugins/connect/connect.kak"
@@ -76,19 +107,24 @@ evaluate-commands %sh{
   kcr init kakoune
 }
 
+
+
+
+
 # map -docstring 'new client' global normal <c-t> ': new<ret>'
 # map -docstring 'terminal (popup)' global normal <c-ret> ': connect terminal-popup<ret>'
 # map -docstring 'git (popup)' global normal <c-l> ': connect terminal-popup gitui<ret>'
 # map -docstring 'file explorer' global normal <c-e> ': connect terminal-panel sidetree --select %val{buffile}<ret>'
-map -docstring 'file picker' global user v ': connect terminal kcr fzf files<ret>'
+# map -docstring 'file picker' global user v ': connect terminal kcr fzf files<ret>'
 # map -docstring 'buffer picker' global user m ': connect terminal kcr fzf buffers<ret>'
-map -docstring 'buffer picker' global user m ': connect run kitty --name fzf kcr-fzf-buffers<ret>'
+# map -docstring 'buffer picker' global user m ': connect run kitty --name fzf kcr-fzf-buffers<ret>'
+map -docstring 'buffer picker' global user m ': alacritty-fzf kcr-fzf-buffers<ret>'
 # map -docstring 'file picker' global user a ': connect run kitty --name fzf sh -c kcr-fzf-files -I<ret>'
-map -docstring 'file picker' global user a ': connect run kitty --name fzf kcr-fzf-files -I --exclude .git --exclude void-packages --exclude node_modules<ret>'
-map -docstring 'grep picker' global user j ': connect run kitty --name fzf kcr-fzf-grep<ret>'
-map -docstring 'grep picker' global user J ': connect run kitty --name fzf kcr-fzf-grep %{buflist}<ret>'
-map -docstring 'fm' global user h ': connect run kitty --name fzf nnn<ret>'
-map -docstring 'gitui' global user z ': connect run kitty --name fzf gitui<ret>'
+map -docstring 'file picker' global user a ': alacritty-fzf kcr-fzf-files -I --exclude .git --exclude void-packages --exclude node_modules<ret>'
+map -docstring 'grep picker' global user j ': alacritty-fzf kcr-fzf-grep<ret>'
+map -docstring 'grep picker' global user J ': alacritty-fzf kcr-fzf-grep %{buflist}<ret>'
+map -docstring 'fm' global user h ': alacritty-fzf nnn<ret>'
+map -docstring 'gitui' global user z ': alacritty-fzf gitui<ret>'
 map -docstring 'last buffer' global user f ': buffer-last<ret>'
 map -docstring 'next buffer' global user p ': buffer-next<ret>'
 map -docstring 'previous buffer' global user d ': buffer-previous<ret>'
@@ -107,6 +143,7 @@ set-option global windowing_modules 'x11'
 #set-option global auto_pairs ( ) { } [ ] '"' '"' "'" "'" ` ` “ ” ‘ ’ « » ‹ ›
 
 colorscheme cherry
+# colorscheme catppuccin
 
 
 set-face global PrimarySelection white,blue+F
@@ -316,6 +353,7 @@ map global normal <space> ,
 map global normal I <percent>
 #swapcase
 map global normal <c-i> <a-`> 
+map global normal <a-i> <a-`> 
 
 map global normal r :
 # map global normal ä /
@@ -419,9 +457,12 @@ map global normal ö ':enter-user-mode surround<ret>'
 # map global user i ':evaluate-commands %sh{kitty --name sidebar -e sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> '
 #
 # i3run -s -i 
-map global user H ':connect run kitty --hold sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> ' 
-map global user i ':connect run kitty <ret> ' 
-map global user e ':evaluate-commands %sh{echo "connect run kitty -d ${kak_buffile%/*}"}<ret>' -docstring 'new terminal @ buffer file' 
+map global user H ':alacritty-hold sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> ' 
+map global user i ':alacritty-terminal-window <ret> ' 
+map global user e ':alacritty-buffer<ret>' -docstring 'new terminal @ buffer file' 
+# map global user H ':connect run kitty --hold sh -c "i3-msg move left && i3-msg resize set width 200px && nnn"}<ret> ' 
+# map global user i ':connect run kitty <ret> ' 
+# map global user e ':evaluate-commands %sh{echo "connect run kitty -d ${kak_buffile%/*}"}<ret>' -docstring 'new terminal @ buffer file' 
 
 hook global WinSetOption filetype=html %{
     set-option buffer formatcmd "run(){ tidy -q --indent yes --indent-spaces %opt{tabstop}  2>/dev/null || true; } && run"
@@ -625,3 +666,39 @@ map global lsp 'ä' %{:lsp-auto-hover-enable hover<ret>:lsp-auto-hover-insert-mo
 map global lsp 'b' %{:lsp-auto-hover-disable<ret>:lsp-auto-hover-insert-mode-disable<ret>} -docstring 'disable buffer'
 map global lsp 'ö' %{:rmhl window/number-lines_-separator_\ _-hlcursor<ret>:set window modelinefmt ''<ret>} -docstring 'setup lsp watcher'
 
+
+
+
+
+
+declare-option -hidden range-specs alignment_spaces_specs
+define-command -hidden -override update-alignment-spaces %{
+    try %[ eval -draft %{
+        exec <percent> s ^ <space> <ret>
+        exec w s <space> { %opt{indentwidth} } <ret> '<a-;>' ';'
+        set-option window alignment_spaces_specs %val{timestamp}
+        eval -itersel %{
+            set-option -add window alignment_spaces_specs "%val{selection_desc}|│"
+        }
+    }]
+}
+
+define-command window-remove-alignment %{
+    remove-highlighter window/alignment-tabs
+    remove-highlighter window/alignment-spaces
+    remove-highlighter window/alignment-spaces-hl
+    remove-hooks window alignment
+}
+define-command window-enable-alignment-tabs %{
+    add-highlighter window/alignment-tabs ref -passes move alignment-tabs
+}
+define-command window-enable-alignment-spaces %{
+    hook window -group alignment NormalIdle .* update-alignment-spaces
+    hook window -group alignment InsertIdle .* update-alignment-spaces
+    add-highlighter window/alignment-spaces ref -passes move alignment-spaces
+    add-highlighter window/alignment-spaces-hl regex \
+        "( ) {%sh{ let ""x = $kak_opt_indentwidth - 1""; echo $x }}" 1:Whitespace
+}
+
+add-highlighter shared/alignment-tabs show-whitespaces -tab '│' -tabpad ' ' -spc ' ' -lf ' ' -nbsp ' '
+add-highlighter shared/alignment-spaces replace-ranges alignment_spaces_specs

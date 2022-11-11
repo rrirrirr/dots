@@ -104,12 +104,15 @@ remappings = {'h':'t',
 					'o':'p',
     				'O':'P',
 					'd':'g',
+					'y':'d',
 }
 remap_in_all_modes(remappings)
 c.bindings.commands['normal'] = {
 
     'e': 'set-cmd-text /',
     'E': 'set-cmd-text ?',#c.bindings.commands['normal'] = {
+    'o': 'set content.javascript.enabled false',
+    'O': 'set content.javascript.enabled true',
 }
 #i# When to show a changelog after qutebrowser was upgraded.
 ## Type: String
@@ -721,7 +724,9 @@ c.bindings.commands['normal'] = {
 
 ## Enable the ad/host blocker
 ## Type: Bool
+
 c.content.blocking.enabled = True
+c.content.blocking.method = 'auto'
 
 # ":set content.blocking.method adblock",
 # config.set("content.blocking.method", "adblock")
@@ -749,7 +754,7 @@ c.content.blocking.enabled = True
 ##   - adblock: Use Brave's ABP-style adblocker
 ##   - hosts: Use hosts blocking
 ##   - both: Use both hosts blocking and Brave's ABP-style adblocker
-c.content.blocking.method = 'auto'
+# c.content.blocking.method = 'auto'
 
 ## A list of patterns that should always be loaded, despite being blocked
 ## by the ad-/host-blocker. Local domains are always exempt from
@@ -1979,7 +1984,7 @@ c.tabs.show_switching_delay = 2200
 ## entered to be opened. Other search engines can be used by prepending
 ## the search engine name to the search term, e.g. `:open google
 ## qutebrowser`.
-## Type: Dict
+## Type: Dic
 c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 ## Page(s) to open at the start.
 ## Type: List of FuzzyUrl, or FuzzyUrl
@@ -2339,7 +2344,7 @@ config.bind(',k', 'spawn mpv {url}')
 config.bind('k', 'hint links spawn umpv {hint-url}')
 config.bind(';x', 'hint --rapid links spawn umpv {hint-url}')
 config.source('qutewal/qutewal.py')
-config.set("colors.webpage.darkmode.enabled", True)
+config.set("colors.webpage.darkmode.enabled", False)
 
 # c.colors.webpage.bg = 'black'
 c.colors.webpage.bg = '#151515'

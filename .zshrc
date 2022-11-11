@@ -8,12 +8,18 @@ export PATH=$HOME/local/i3/bin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
 export PATH=$HOME/.nimble/bin:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH
+export PATH=$HOME/.dotnet:$PATH
+export PATH=$HOME/.dotnet/tools:$PATH
 # Path to your oh-my-zsh installation.
 # export ZSH=/home/utter/.oh-my-zsh
 
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
+
+
 export EDITOR=kak
 
-(cat ~/.cache/wal/sequences &)
+# (cat ~/.cache/wal/sequences &)
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -111,7 +117,10 @@ SAVEHIST=10000
 setopt appendhistory
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS="--ansi --layout=reverse --multi"
+export FZF_DEFAULT_OPTS="--ansi --layout=reverse --multi \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+
 # export FZF_DEFAULT_COMMAND="fd --type file --hidden -I"
 export FZF_DEFAULT_COMMAND="fd --type file --hidden -I --exclude .git --exclude void-packages --exclude node_modules"
 
@@ -237,7 +246,7 @@ alias fzfp="fzf --preview 'bat --style=numbers --color=always --line-range :500 
 # alias -g Z='$(fzf)'
 alias -g Z='`fzf`'
 # alias -g Z='~/scr``ts/fzf/open.sh'
-alias nk="i3-msg move left && i3-msg resize set width 200px && nnn"
+# alias nk="i3-msg move left && i3-msg resize set width 200px && nnn"
 # alias ntree ="sh -c 'i3-msg move left && i3-msg resize set width 200px && nnn'"
 alias http='python3 -m http.server'
 alias hide='kitty @ set-window-title h'
@@ -245,6 +254,7 @@ alias unhide='kitty @ set-window-title v'
 alias visible='kitty @ set-window-title viz'
 alias batt='bat -p --paging=always'
 
+alias pv='pipe-viewer'
 
 alias l="exa -l --no-permissions"
 alias la="exa -la --no-permissions"

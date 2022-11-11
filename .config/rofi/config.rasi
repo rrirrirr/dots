@@ -1,21 +1,18 @@
-/** Basic config file **/
-
-configuration {
-  show-icons:         false;
-  icon-theme:         "Papirus";
-  font:               "Proxima Nova 22";
-  terminal:            "kitty";
-lines:                 0;
-line-padding:          10;
-matching:              "fuzzy";
-bw:                    0;
-padding:               0;
-separator-style:       none;
-hide-scrollbar:        true;
-line-margin:           0;
-  /* theme: "~/.config/rofi/nordtheme.rasi"; */
-
-/*theme: "~/.cache/wal/colors-rofi-dark.rasi";*/
+configuration{
+    modi: "run,drun,window";
+    icon-theme: "Oranchelo";
+    show-icons: true;
+    terminal: "alacritty";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: " 﩯  Window";
+    display-Network: " 󰤨  Network";
+    sidebar-mode: true;
 }
-@theme "~/.config/rofi/mytheme.rasi"
+
+@theme "catppuccin-mocha"
 
