@@ -21,6 +21,7 @@ new_float none
 set_from_resource $fg i3wm.color7 #f0f0f0
 set $bg #00000000
 set $c1 #30063a
+set $c11 #50065a
 set $c2 #b03cff
 set $c3 #ff40ee
 set $c4 #00aaff
@@ -33,17 +34,21 @@ set $c9 #a089a7
 
 
 # class                 border  backgr. text indicator child_border
-client.focused          $c1     $c1     $c8  $c1       $bg
-client.focused_inactive $c1     $bg     $c8  $c1       $bg
-client.unfocused        $c1     $bg     $c8  $c1       $bg
+client.focused          $c1     $c11     $c8  $c1       $bg
+client.focused_inactive $c1     $c1     $c2  $c1       $bg
+client.unfocused        $c1     $bg     $c2  $c1       $bg
 client.urgent           $bg     $bg     $c8  $c1       $bg
 client.placeholder      $bg     $bg     $c8  $c1       $bg
-
 client.background       $bg
 
 # PROTIP: You can also dynamically set dmenu's colors this way:
 # bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
 workspace_auto_back_and_forth no
+for_window [all] title_window_icon on
+for_window [all] title_window_icon padding 3px
+#for_window [all] title_align center
+for_window [class=".*"] title_format "<span letter_spacing='1100'>%class</span>"
+for_window [class="Alacritty"] title_format "<span letter_spacing='1100'>%title</span>"
 
 set $term "alacritty msg create-window --working-directory ~/ || alacritty"
 
@@ -59,6 +64,9 @@ set $primary exec --no-startup-id ~/local/i3/bin/i3-mode Primary
 set $secondary exec --no-startup-id ~/local/i3/bin/i3-mode Secondary
 
 # Helpers. Embedding the path explicitly is belt and braces.
+exec_always --no-startup-id i3-focus-last server
+
+
 set $i3cmdprompt exec --no-startup-id ~/local/i3/bin/i3-command-prompt
 set $i3configscripts exec --no-startup-id ~/local/i3/bin/i3-config-scripts
 set $i3dispatcher exec --no-startup-id ~/local/i3/bin/i3-dispatcher
@@ -88,7 +96,7 @@ set $help exec --no-startup-id xfce4-terminal -T Bindings -x /bin/bash -c \
 # bindsym $mod+y  split v,exec --no-startup-id xfce4-terminal -T "xfce4-terminal"
 
 # Kill focused window.
-bindsym Shift+Escape kill
+bindsym Control+Shift+Escape kill
 # Kill focused floating window. When killing popups this cannot kill
 # the (tiled) parent (as can happen by accident).
 bindsym $mod+Shift+Escape [floating] kill
@@ -125,10 +133,18 @@ bindsym $mod+l              exec --no-startup-id i3viswiz up
 bindsym $mod+s           exec --no-startup-id i3viswiz right
 
 
-bindsym $mod+Shift+t      exec --no-startup-id i3Kornhe move --speed 0 left
-bindsym $mod+Shift+n      exec --no-startup-id i3Kornhe move --speed 0 down
-bindsym $mod+Shift+l        exec --no-startup-id i3Kornhe move --speed 0 up
-bindsym $mod+Shift+s     exec --no-startup-id i3Kornhe move --speed 0 right
+bindsym $mod+Shift+t      move left
+bindsym $mod+Shift+n      move down
+bindsym $mod+Shift+l        move up
+bindsym $mod+Shift+s     move right
+bindsym $mod+Control+t      move left
+bindsym $mod+Control+n      move down
+bindsym $mod+Control+l        move up
+bindsym $mod+Control+s     move right
+# bindsym $mod+Shift+t      exec --no-startup-id i3Kornhe move --speed 0 left
+# bindsym $mod+Shift+n      exec --no-startup-id i3Kornhe move --speed 0 down
+# bindsym $mod+Shift+l        exec --no-startup-id i3Kornhe move --speed 0 up
+# bindsym $mod+Shift+s     exec --no-startup-id i3Kornhe move --speed 0 right
 
 # bindsym $mod+Shift+$left            exec --no-startup-id i3fyra --move left
 # bindsym $mod+Shift+$down            exec --no-startup-id i3fyra --move down
@@ -273,6 +289,8 @@ mode "resize" {
 # I have used 'xcape' to bind Super_L to Menu for the left hand.
 # Pressing cycles through the three modes. Def->Pri->Sec->Def.
 bindsym XF86MenuKB $primary
+bindsym Control+Mod1+$mod+z $secondary
+
 # bindsym Print $primary
 
 # KP_Insert is a design decision please do not change.
@@ -324,6 +342,8 @@ mode "Primary" {
     bindsym Shift+s                 move right
 
 
+    bindsym a exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Go to: '; \
+    	$default
 
     bindsym z exec --no-startup-id i3zen --workspace zen
 
@@ -446,6 +466,8 @@ mode "Primary" {
 
     # Pressing cycles through the three modes. Pri->Sec->Def->Pri.
     bindsym XF86MenuKB $secondary
+		bindsym Control+Mod1+$mod+z $secondary
+
     # bindsym Print $secondary
 }
 
@@ -490,6 +512,12 @@ mode "Secondary" {
     bindsym Shift+n        exec --no-startup-id i3Kornhe size --speed 5 down
     bindsym Shift+l        exec --no-startup-id i3Kornhe size --speed 5 up
     bindsym Shift+s        exec --no-startup-id i3Kornhe size --speed 5 right
+
+    bindsym Control+t      exec --no-startup-id i3Kornhe size --speed 200 left
+    bindsym Control+n      exec --no-startup-id i3Kornhe size --speed 200 down
+    bindsym Control+l      exec --no-startup-id i3Kornhe size --speed 200 up
+    bindsym Control+s      exec --no-startup-id i3Kornhe size --speed 200 right
+
 
     bindsym Control+t				exec --no-startup-id i3viswiz left
     bindsym Control+n				exec --no-startup-id i3viswiz down
@@ -563,6 +591,7 @@ for_window [class="imv"] floating enable, move absolute position 1010 240, resiz
 no_focus [class="imv"]
 
 for_window [class="Alacritty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
+for_window [class="Alacritty" instance="music"] floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
 for_window [class="Alacritty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 180 220, resize set 1200 680, scratchpad show
 # for_window [class="Alacritty" instance="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
 for_window [class="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
@@ -596,8 +625,9 @@ bindsym $mod+shift+h exec rofi -modi shortcut:~/scripts/i3/i3-shortcut-help.sh -
 # bindsym $mod+Shift+j				 exec alacritty -o background_opacity=1.0 --class spotify-tui -e spotify-tui;  exec spotifyd --no-daemon
 
 ## Launch/Toggle // Spotify //  + j ## 
-bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- alacritty --class spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
-bindsym $mod+shift+j 			exec --no-startup-id pkill spotifyd; exec --no-startup-id spotifyd
+# bindsym $mod+j 						exec --no-startup-id i3run -s -i spotify-tui -- alacritty --class spotify-tui --hold -e sh -c "cat ~/.cache/wal/sequences && spotify-tui";  
+bindsym $mod+j 						exec --no-startup-id i3run -s -i music -- alacritty --class music --hold -e sh -c ncspot;  
+# bindsym $mod+shift+j 			exec --no-startup-id pkill spotifyd; exec --no-startup-id spotifyd
 ## Launch/Toggle // MPV //  + b ## 
 bindsym $mod+b 						exec --no-startup-id i3run -c mpv -- mpv
 
@@ -606,7 +636,7 @@ bindsym $mod+b 						exec --no-startup-id i3run -c mpv -- mpv
 
 bindsym $mod+x 			     [con_mark="signal"] scratchpad show 
 #bindsym $mod+o                   scratchpad show
-bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
+# bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
 # bindsym $mod+q 						exec qutebrowser
 bindsym $mod+q 						exec --no-startup-id i3run -i qutebrowser -e qutebrowser
 bindsym $mod+Return                  exec alacritty 
@@ -614,12 +644,12 @@ bindsym $mod+Shift+Return            exec alacritty -e kak $(fzf)
 # bindsym Shift+Escape                 kill
 # bindsym Mod1+e                       exec rofi -show drun
 # bindsym Control+Mod1+o               exec --no-startup-id i3run --summon --instance fif -- alacritty --class fif -o background_opacity=1.0 -e nnn
-bindsym Control+$mod+t       				 exec st -n time -e tty-clock
+# bindsym Control+$mod+t       				 exec st -n time -e tty-clock
 bindsym Control+$mod+w               exec st -n wttr -f 'Liberation Mono:size=8' -e sh -c 'curl -s sv.wttr.in/Stockholm && exec zsh'
 #bindsym $mod+u                      exec alacritty --class gotop -e gotop  
 # bindsym $mod+Shift+x                 exec networkmanager_dmenu
 bindsym $mod+Shift+w                 exec flash_window
-#bindsym $mod+l                       exec rofi-pass
+bindsym $mod+f                       exec rofi-rbw
 #bindsym $mod+m 			   [con_mark="ncmp"]  exec urxvt -e ncmpcpp
 #bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
 bindsym $mod+Shift+o 			     exec alacritty --class alsamixer -e pulsemixer
@@ -636,7 +666,8 @@ bindsym Print									exec rofi-screenshot
 bindsym Control+Mod1+g		exec --no-startup-id i3run --instance code-main -- sh ~/scripts/kakoune/start-code-env.sh
 bindsym $mod+y		exec --no-startup-id ~/scripts/rofi-window.sh
 
-bindsym Control+Mod1+h				exec $term 
+bindsym Control+Mod1+h				exec $term
+bindsym Mod1+Control+Shift+h 	exec --no-startup-id alacritty msg create-window --working-directory `xcwd`
 bindsym Control+Mod1+i				fullscreen toggle
 bindsym Control+Mod1+e				exec rofi -show drun	
 bindsym Mod1+Control+Shift+e  exec rofi -show window
@@ -644,6 +675,24 @@ bindsym $mod+m 							 exec rofi -show window
 # bindsym Control+Mod1+a				exec qutebrowser
 bindsym Control+Mod1+a				exec --no-startup-id i3run -i qutebrowser -e qb
 bindsym Control+Shift+Mod1+a	exec --no-startup-id qb
+
+bindsym $mod+z exec --no-startup-id i3-focus-last
+bindsym $mod+Shift+z exec --no-startup-id i3-focus-last menu
+
+bindsym $mod+Shift+u exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Go to: '
+
+
+##########MARKS#############
+
+
+bindsym $mod+Shift+Control+u exec \
+    i3-msg -t get_marks | \
+    jq -r '.[]' | \
+    rofi -dmenu -p 'Unmark' | \
+    xargs -I{} i3-msg '[con_mark="{}"] unmark'
+
+
+
 
 # bindsym Control+Mod1+g				kill
 

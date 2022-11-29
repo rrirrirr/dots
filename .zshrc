@@ -10,6 +10,10 @@ export PATH=$HOME/.nimble/bin:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.dotnet:$PATH
 export PATH=$HOME/.dotnet/tools:$PATH
+export PATH=$HOME/.ghcup/bin:$PATH
+
+[ -f "/home/utter/.ghcup/env" ] && source "/home/utter/.ghcup/env" # ghcup-env
+
 # Path to your oh-my-zsh installation.
 # export ZSH=/home/utter/.oh-my-zsh
 
@@ -229,6 +233,7 @@ alias g:='KK kcr fzf grep'
 
 alias kcd='kcr send execute-keys "cd $PWD"'
 
+alias aa='alacritty msg create-window --working-directory `pwd`'
 
 alias vi='nvim'
 alias gv='gvim -v'
@@ -292,3 +297,4 @@ n ()
     fi
 }
 # fi
+

@@ -102,18 +102,21 @@ remappings = {'h':'t',
 					'b':'j',
 					'B':'J',
 					'o':'p',
-    				'O':'P',
+    			'O':'P',
 					'd':'g',
 					'y':'d',
 }
 remap_in_all_modes(remappings)
 c.bindings.commands['normal'] = {
 
-    'e': 'set-cmd-text /',
+    'e': 'set statusbar.show always;; set-cmd-text /',
     'E': 'set-cmd-text ?',#c.bindings.commands['normal'] = {
-    'o': 'set content.javascript.enabled false',
-    'O': 'set content.javascript.enabled true',
+    'O': 'set content.javascript.enabled false',
+    'o': 'set content.javascript.enabled true',
 }
+config.bind('p', 'set statusbar.show always;; set-cmd-text -s :open')
+config.bind('P', 'set statusbar.show always;; set-cmd-text -s :open -t')
+
 #i# When to show a changelog after qutebrowser was upgraded.
 ## Type: String
 ## Valid values:
@@ -2222,8 +2225,8 @@ config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('}}', 'navigate next -t')
 
 ## Bindings for caret mode
-# config.bind('$', 'move-to-end-of-line', mode='caret')
-# config.bind('0', 'move-to-start-of-line', mode='caret')
+config.bind('<Alt-S>', 'move-to-end-of-line', mode='caret')
+config.bind('<Alt-T>', 'move-to-start-of-line', mode='caret')
 # config.bind('<Ctrl-Space>', 'selection-drop', mode='caret')
 # config.bind('<Escape>', 'mode-leave', mode='caret')
 # config.bind('<Return>', 'yank selection', mode='caret')
@@ -2237,26 +2240,30 @@ config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('Y', 'yank selection -s', mode='caret')
 # config.bind('[', 'move-to-start-of-prev-block', mode='caret')
 # config.bind(']', 'move-to-start-of-next-block', mode='caret')
-# config.bind('b', 'move-to-prev-word', mode='caret')
+config.bind('<F1>', 'move-to-prev-word', mode='caret')
 # config.bind('c', 'mode-enter normal', mode='caret')
 # config.bind('e', 'move-to-end-of-word', mode='caret')
 # config.bind('gg', 'move-to-start-of-document', mode='caret')
 # config.bind('h', 'move-to-prev-char', mode='caret')
-# config.bind('j', 'move-to-next-line', mode='caret')
-# config.bind('k', 'move-to-prev-line', mode='caret')
+config.bind('<F8>', 'move-to-next-line', mode='caret')
+config.bind('<F6>', 'move-to-prev-line', mode='caret')
 # config.bind('l', 'move-to-next-char', mode='caret')
 # config.bind('o', 'selection-reverse', mode='caret')
 # config.bind('v', 'selection-toggle', mode='caret')
-# config.bind('w', 'move-to-next-word', mode='caret')
+config.bind('<F3>', 'move-to-next-word', mode='caret')
 # config.bind('y', 'yank selection', mode='caret')
-# config.bind('{', 'move-to-end-of-prev-block', mode='caret')
-# config.bind('}', 'move-to-end-of-next-block', mode='caret')
+config.bind('{', 'move-to-end-of-prev-block', mode='caret')
+config.bind('}', 'move-to-end-of-next-block', mode='caret')
 
 ## Bindings for command mode
-# config.bind('<Alt-B>', 'rl-backward-word', mode='command')
-# config.bind('<Alt-Backspace>', 'rl-backward-kill-word', mode='command')
-# config.bind('<Alt-D>', 'rl-kill-word', mode='command')
-# config.bind('<Alt-F>', 'rl-forward-word', mode='command')
+config.bind('<F1>', 'rl-backward-word', mode='command')
+config.bind('<CTRL-T>', 'rl-backward-kill-word', mode='command')
+# config.bind('<ALT-T>', 'rl-kill-word', mode='command')
+# config.bind('<ALT-S>', 'rl-forward-word', mode='command')
+config.bind('<CTRL-S>', 'rl-kill-word', mode='command')
+config.bind('<F3>', 'rl-forward-word', mode='command')
+config.bind('<Ctrl-T>', 'rl-kill-word', mode='insert')
+config.bind('<Ctrl-S>', 'rl-forward-word', mode='insert')
 # config.bind('<Ctrl-?>', 'rl-delete-char', mode='command')
 # config.bind('<Ctrl-A>', 'rl-beginning-of-line', mode='command')
 # config.bind('<Ctrl-B>', 'rl-backward-char', mode='command')
@@ -2298,7 +2305,7 @@ config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('<Shift-Ins>', 'insert-text -- {primary}', mode='insert')
 
 ## Bindings for passthrough mode
-# config.bind('<Shift-Escape>', 'mode-leave', mode='passthrough')
+config.bind('<Shift-v>', 'mode-leave', mode='passthrough')
 
 ## Bindings for prompt mode
 # config.bind('<Alt-B>', 'rl-backward-word', mode='prompt')
@@ -2318,7 +2325,7 @@ config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('<Ctrl-U>', 'rl-unix-line-discard', mode='prompt')
 # config.bind('<Ctrl-W>', 'rl-unix-word-rubout', mode='prompt')
 # config.bind('<Ctrl-X>', 'prompt-open-download', mode='prompt')
-# config.bind('<Ctrl-Y>', 'rl-yank', mode='prompt')
+# config.bind('<Ctrl-Y>', 'rl-yank', mde='prompt')
 # config.bind('<Down>', 'prompt-item-focus next', mode='prompt')
 # config.bind('<Escape>', 'mode-leave', mode='prompt')
 # config.bind('<Return>', 'prompt-accept', mode='prompt')
@@ -2339,6 +2346,33 @@ config.bind('m', 'set-cmd-text -s :tab-select')
 # config.bind('n', 'prompt-accept no', mode='yesno')
 # config.bind('y', 'prompt-accept yes', mode='yesno')
 
+# config.bind('o', 'set statusbar.show always;; set-cmd-text -s :open')
+# config.bind('O', 'set statusbar.show always;; set-cmd-text -s :open -t')
+config.bind(':', 'set statusbar.show always;; set-cmd-text :')
+config.bind('<Escape>', 'mode-leave;; set statusbar.show in-mode ', mode='command')
+config.bind('<Return>', 'command-accept;; set statusbar.show in-mode', mode='command')
+config.bind('/', 'set statusbar.show always;; set-cmd-text /')
+
+
+
+
+config.bind(        '<Alt-p>' ,        'fake-key <Ctrl-v>', mode='insert')
+config.bind(        '<Alt-d>' ,        'fake-key <Ctrl-c>', mode='insert')
+config.bind(        '<Ctrl-a>',         'fake-key <Home>', mode='insert')
+config.bind(        '<Ctrl-e>',         'fake-key <End>', mode='insert')
+config.bind(        '<Ctrl-n>',         'fake-key <Down>', mode='insert')
+config.bind(        '<Ctrl-p>',         'fake-key <Up>', mode='insert')
+config.bind(        '<Alt-v>' ,         'fake-key <PgUp>', mode='insert')
+config.bind(        '<Ctrl-v>',         'fake-key <PgDown>', mode='insert')
+config.bind(        '<F3>'    ,      'fake-key <Ctrl-Right>', mode='insert')
+config.bind(        '<F1>'    ,      'fake-key <Ctrl-Left>', mode='insert')
+config.bind(        '<Ctrl-d>',         'fake-key <Delete>', mode='insert')
+config.bind(        '<CTRL-s>',          'fake-key <Ctrl-Delete>', mode='insert')
+config.bind(        '<CTRL-t>',  'fake-key <Ctrl-Backspace>', mode='insert')
+config.bind(        '<Ctrl-y>',         'insert-text {primary}', mode ='insert')
+
+
+
 
 config.bind(',k', 'spawn mpv {url}')
 config.bind('k', 'hint links spawn umpv {hint-url}')
@@ -2347,5 +2381,6 @@ config.source('qutewal/qutewal.py')
 config.set("colors.webpage.darkmode.enabled", False)
 
 # c.colors.webpage.bg = 'black'
-c.colors.webpage.bg = '#151515'
+# c.colors.webpage.bg = '#151515'
+c.colors.webpage.bg = '#eeeeee'
 

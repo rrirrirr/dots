@@ -18,65 +18,74 @@ set recolor-keephue 'false'
 # Don't keep original image colors while recoloring
 set recolor-reverse-video 'false'
 
-# Command line completion entries
-set completion-fg '#97bcb8'
-set completion-bg '#1c0222'
-
-# Command line completion group elements
-set completion-group-fg '#9C5445'
-set completion-group-bg '#1c0222'
-
-# Current command line completion element
-set completion-highlight-fg '#1c0222'
-set completion-highlight-bg '#97bcb8'
 
 # Default foreground/background color
 set default-bg rgba(100,100,100,0)
-
-# Input bar
-set inputbar-fg '#97bcb8'
-set inputbar-bg '#1c0222'
-
-# Notification
-set notification-fg '#97bcb8'
-set notification-bg '#1c0222'
-
-# Error notification
-set notification-error-fg '#97bcb8'
-set notification-error-bg '#F86309'
-
-# Warning notification
-set notification-warning-fg '#97bcb8'
-set notification-warning-bg '#F86309'
-
-# Tab - TODO
-# set tabbar-fg
-# set tabbar-bg
-
-# Focused tab - TODO
-# set tabbar-focus-fg
-# set tabbar-focus-bg
-
-# Status bar
-set statusbar-fg '#97bcb8'
-set statusbar-bg '#1c0222'
-
-# Highlighting parts of the document (e.g. show search results)
-set highlight-color '#9C5445'
-set highlight-active-color '#9C5445'
 
 # Represent light/dark colors in recoloring mode
 set recolor-lightcolor rgba(0,0,0,0)
 set recolor-darkcolor '#97bcb8'
 
-# 'Loading...' text
-set render-loading-fg '#97bcb8'
-set render-loading-bg '#1c0222'
 
-# Index mode
-set index-fg '#97bcb8'
-set index-bg '#1c0222'
 
-# Selected element in index mode
-set index-active-fg '#1c0222'
-set index-active-bg '#97bcb8'
+set default-fg                "#C6D0F5"
+
+set completion-bg		          "#414559"
+set completion-fg		          "#C6D0F5"
+set completion-highlight-bg	  "#575268"
+set completion-highlight-fg	  "#C6D0F5"
+set completion-group-bg		    "#414559"
+set completion-group-fg		    "#8CAAEE"
+
+set statusbar-fg		          "#C6D0F5"
+set statusbar-bg		          "#414559"
+
+set notification-bg		        "#414559"
+set notification-fg		        "#C6D0F5"
+set notification-error-bg	    "#414559"
+set notification-error-fg	    "#E78284"
+set notification-warning-bg	  "#414559"
+set notification-warning-fg	  "#FAE3B0"
+
+set inputbar-fg			          "#C6D0F5"
+set inputbar-bg 		          "#414559"
+
+set recolor-darkcolor		      "#C6D0F5"
+
+set index-fg			            "#C6D0F5"
+set index-bg			            "#303446"
+set index-active-fg		        "#C6D0F5"
+set index-active-bg		        "#414559"
+
+set render-loading-bg		      "#303446"
+set render-loading-fg		      "#C6D0F5"
+
+set highlight-color		        "#575268"
+set highlight-fg              "#F4B8E4"
+set highlight-active-color	  "#F4B8E4"
+
+
+unmap		 [normal] r
+map			 [normal] r 		feedkeys :
+unmap		 [normal] l
+map			 [normal] l 		scroll up
+unmap		 [normal] n 
+map			 [normal] n			scroll down
+unmap		 [normal] t 
+map			 [normal] t 		scroll left
+unmap		 [normal] s 
+map			 [normal] s		  scroll right
+unmap		 [normal] e
+map			 [normal] e		  feedkeys /
+unmap    [normal] <F10>		
+map      [normal] <F10> search
+unmap    [normal] <F11>	
+map 		 [normal] <F11>	search backward
+unmap    [normal] <F9>		
+map 		 [normal] <F9>	search forward
+unmap		 [normal] h
+map			 [normal] h 		goto 
+unmap		 [normal] v
+map			 [normal] v 		zoom out
+unmap		 [normal] w
+map			 [normal] w			zoom in
