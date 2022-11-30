@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# The "services" (note the "fingers in the air" quotes) are intended
+# to run contnuously for the session lifetime.
+#
+# The early code was both over-engineered and clueless, hence there is
+# legacy stuff that persists as I carefully excise the pretentious
+# bits and address the cluelessness.
+#
+# 2021-04-03: The commands and marks "services" interact with starting
+# and restarting i3 itself. This has been encapsulated in the command
+# 'i3-config-scripts restart'; calling any other command is trouble.
+#
+# 2021-09-19: The hardcoded paths to i3-marks and i3-commands are a
+# maintenance burden.
+#
+# 2021-11-04: i3-config-scripts restart
+#
+case "$1" in
+    (start)
+        case "$2" in
+            (marks)
+                (st -n "$(date +%T) marks" \
+                                -e "${HOME}/gits/dopamine-2020/i3scripts/i3-marks" update) &
+                i3-marks alphabetic
+                ;;
+            (commands)
+                (st -n "$(date +%T) commands" \
+                                -e "${HOME}/local/i3/bin/i3-file-watcher") &
+                i3-marks alphabetic
+                ;;
+        esac
+        ;;
+    (stop)
+        case "$2" in
+            (marks)
+                # This kills everything shown in status.
+                [ "$(pgrep -c -f i3-marks)" -gt 0 ] && killall i3-marks
+                ;;
+            (commands)
+                #
+                cmd="--watch-files /dev/shm/$USER/i3/command"
+                exe="--on-modify-command /dev/shm/$USER/i3/execute"
+                pkill -f "perl /usr/bin/inotify-hookable ${cmd} ${exe}"
+                ;;
+        esac
+        ;;
+    (restart)
+        # 2021-03-17: Shutdown both services before restarting the WM,
+        # allow time for WM restart, then restart both services. KISS.
+        $0 stop commands
+        $0 stop marks
+        if [ "$(i3-msg -t get_workspaces | grep -c wm)" -ne 0 ]; then
+            i3-msg "[workspace=\"wm\"] kill"
+            sleep 3
+            i3-msg "restart"
+            sleep 5
+        fi
+        i3-msg "workspace \"wm\""
+        sleep 2
+        $0 start commands
+        $0 start marks
+        ;;
+esac
+
+#
+# Done.
+#

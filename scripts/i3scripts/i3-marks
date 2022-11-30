@@ -1,0 +1,92 @@
+#!/bin/bash
+#
+
+declare -a queue=()
+declare -a chars=(a t e n i s o l g d h r)
+
+function findid() {
+  found=0
+  test=$1 ## letter combo to test if possible to use
+  local next=(${@:2}) ## the next letter to try
+	for mark in ${marks[@]}
+	do
+  	if [[ "$mark" == "$test" ]] ## is the letter combo used?
+  	then
+    	found=1
+    fi
+  done
+	if [ "$found" -eq 1 ]
+	then
+  	queue+=($test)
+		if [ ${#next[@]} -eq 0 ]
+		then
+			t=${queue[0]}
+   #  	if [ "$t" == "" ]
+			# then
+  			# queue=("${queue[@]:1}")
+   # fi
+   #
+			queue=("${queue[@]:1}")
+  		findid ${t}${chars[0]} ${chars[@]}
+		else
+  		findid ${test:0:-1}${next[0]} ${next[@]:1}
+		fi
+	fi
+	result=$test
+}
+
+
+alphabetic()
+{
+    declare -a marks=$(i3-msg -t get_marks | grep '[a-z]' | sed 's/,/\ /g' | tr -d "\"[]")
+    # echo ${chars[@]}
+		findid "a" ${chars[@]:1}
+    # id=$(findid "a" "${chars[@]:1}")
+    id=$result
+    # sleep 1 # No need for caller to wait for the window.
+		# echo $id
+    windowid=$(printf "0x%x" "$(xdotool getwindowfocus)")
+    i3-msg "[id=\"${windowid}\"] mark --toggle \"${id}\""
+    i3-msg "[con_mark=\"${id}\"] focus"
+}
+
+
+
+
+update()
+{
+    notify-send 'update'
+
+    # shellcheck disable=SC2034
+    # i3-msg -t subscribe -m '[ "window" ]' | \
+    #     while read -r line ; do commandalias; read -r line; read -r line; done
+    i3-msg -t subscribe -m '[ "window" ]' | \
+        while read -r line ; do
+          change=`echo $line | jq -r '."change"'`
+          if [[ "$change" == "new" ]]
+          then
+            alphabetic
+          fi
+         done
+    # Why 3 reads? I thought I had seen each event sending 3 lines.
+    # With just 1 read, CPU usage rises, the marks on the title bar
+    # flicker. This ought to be investigated further, but it works.
+}
+
+
+#
+# Start here.
+#
+
+case "_$1" in
+    (_alphabetic)
+        alphabetic
+        ;;
+    (_update)
+        update
+        ;;
+esac
+
+#
+# Done.
+#
