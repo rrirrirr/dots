@@ -1,0 +1,537 @@
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+
+plug "andreyorst/plug.kak" noload
+plug "occivink/kakoune-phantom-selection" %{
+} plug "https://github.com/rrirrirr/kakoune-surround" %{
+} plug "Delapouite/kakoune-text-objects" %{
+} plug "alexherbo2/auto-pairs.kak" %{
+	enable-auto-pairs
+  evaluate-commands %sh{ colorcol }
+  hook global WinCreate .* %{
+    colorcol-enable
+    colorcol-refresh-continuous
+  }
+} plug "andreyorst/fzf.kak" config %{ 
+  # config %{
+  require-module fzf
+  require-module fzf-buffer
+  require-module fzf-cd
+  require-module fzf-file
+  require-module fzf-grep
+  require-module fzf-search
+  set-option global fzf_terminal_command 'alacritty-fzf'
+  set-option global fzf_file_preview true
+  set-option global fzf_highlight_command 'bat'
+  # map global user a ': fzf-mode<ret>' -docstring 'fzf'
+  # }
+} plug 'delapouite/kakoune-buffers' %{
+#  map global normal ^ q
+#  map global normal <a-^> Q
+#  map global normal q b
+#  map global normal Q B
+#  map global normal <a-q> <a-b>
+#  map global normal <a-Q> <a-B>
+  map global user g ': pick-buffers<ret>' -docstring 'buffers'
+  map global user G ': enter-buffers-mode<ret>' -docstring 'buffers'
+  map global user ö ':delete-buffer<ret>'
+  # map global user <s-ö> ':delete-buffer!<ret>'
+} plug "rrirrirr/kakoune-easymotion" %{
+} plug "occivink/kakoune-sudo-write" %{
+}
+
+define-command -override alacritty-fzf -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --class=fzf --working-directory "$PWD" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+define-command -override alacritty-hold -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --hold --working-directory "$PWD" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+define-command -override alacritty-buffer -params .. -docstring 'alacritty-terminal-window [<program>] [<arguments>]: Creates a new terminal as an Alacritty window.' %{
+  nop %sh{
+    alacritty msg create-window --working-directory "${kak_buffile%/*}" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
+  }
+}
+
+
+
+# set-option global fzf_terminal_command 'terminal kak -c %val{session} -e "%arg{@}"'
+set-option global ui_options terminal_status_on_top=true
+
+map -docstring 'cd fzf' global user c ': fzf-cd<ret>'
+map -docstring 'buffer picker' global user m ': fzf-buffer<ret>'
+map -docstring 'buffer search' global user e ': fzf-buffer-search<ret>'
+map -docstring 'file picker' global user a ': alacritty-fzf kcr-fzf-files -I --exclude .git --exclude void-packages --exclude node_modules<ret>'
+map -docstring 'grep picker' global user j ': alacritty-fzf kcr-fzf-grep<ret>'
+map -docstring 'grep picker' global user J ': alacritty-fzf kcr-fzf-grep %{buflist}<ret>'
+map -docstring 'fm' global user h ': alacritty-fzf nnn<ret>'
+map -docstring 'gitui' global user z ': alacritty-fzf gitui<ret>'
+map -docstring 'last buffer' global user f ': buffer-last<ret>'
+map -docstring 'next buffer' global user p ': buffer-next<ret>'
+map -docstring 'previous buffer' global user d ': buffer-previous<ret>'
+
+set-option global windowing_modules 'x11'
+#set-option global auto_pairs ( ) { } [ ] '"' '"' "'" "'" ` ` “ ” ‘ ’ « » ‹ ›
+set global ui_options terminal_assistant=none
+# colorscheme catppuccin_mocha
+
+set-face global PrimarySelection white,blue+F
+set-face global SecondarySelection black,blue+F
+set-face global PrimaryCursor black,bright-cyan+F
+set-face global SecondaryCursor black,bright-blue+F
+set-face global PrimaryCursorEol black,bright-cyan
+set-face global SecondaryCursorEol black,bright-blue
+
+# # Shades of green/yellow for insert mode.
+hook global ModeChange (push|pop):.*:insert %{
+    set-face window PrimarySelection white,green+F
+    set-face window SecondarySelection black,green+F
+    set-face window PrimaryCursor black,bright-yellow+F
+    set-face window SecondaryCursor black,bright-green+F
+    set-face window PrimaryCursorEol black,bright-yellow
+    set-face window SecondaryCursorEol black,bright-green
+}
+
+# # Undo colour changes when we leave insert mode.
+hook global ModeChange (push|pop):insert:.* %{
+    unset-face window PrimarySelection
+    unset-face window SecondarySelection
+    unset-face window PrimaryCursor
+    unset-face window SecondaryCursor
+    unset-face window PrimaryCursorEol
+    unset-face window SecondaryCursorEol
+}
+
+set-option global modelinefmt '{{context_info}} {{mode_info}} %val{bufname}'
+define-command mode-more-info %{
+  set-option window modelinefmt '%val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} - %val{client}@[%val{session}'
+}
+define-command mode-less-info %{
+  set-option window modelinefmt '%val{bufname}'
+}
+
+# Width of a tab
+set-option global tabstop 2
+
+# Indent with 4 spaces
+set-option global indentwidth 2
+
+# Always keep one line and three columns displayed around the cursor
+set-option global scrolloff 1,3
+
+hook global BufOpenFile .* editorconfig-load
+hook global BufNewFile .* editorconfig-load
+
+hook global WinSetOption filetype=diff %{
+    map global normal <ret> ': diff-jump<ret>'
+}
+
+map global normal t h
+map global normal <a-t> <a-h>
+map global normal <s-t> <s-h>
+# map global normal <c-t> <c-h>
+map global goto   t h
+
+map global normal n j
+map global normal <a-n> pagedown
+map global normal <s-n> <s-j>
+# map global normal <c-n> <c-j>
+map global goto   n b
+#map global goto   N j
+map global view   n t
+
+map global normal l k
+map global normal <a-l> pageup
+map global normal <s-l> <s-k>
+# map global normal <c-l> <c-k>
+map global goto   l t
+#wap global goto   <s-l> k
+map global view   l b
+
+map global normal s l
+map global normal <a-s> <a-l>
+map global normal <s-s> <s-l>
+map global normal <c-s> <c-l>
+map global goto   s l
+
+map global insert <c-t> <esc>bdi 
+map global insert <F1> <esc>bi 
+map global insert <c-s> <esc>wdi 
+map global insert <F3> <esc>Wi 
+
+
+#space mod
+map global normal <F1> b
+map global normal <F3> e
+map global normal <F2> 'lbe'
+map global normal <F4> '<a-;>B<a-;>W'
+map global normal <s-F1> B
+map global normal <s-F3> W
+
+#h mod
+def -hidden -params 1 extend-line-down %{
+  exec "<a-:>%arg{1}X"
+}
+def -params 1 extend-line-up %{
+  # exec "<a-:><a-;>%arg{1}K<a-x>"
+  exec "<a-:><a-;>%arg{1}K<a-;>"
+  try %{
+    exec -draft ';<a-K>\n<ret>'
+    exec X
+  }
+  exec '<a-;><a-X>'
+}
+
+map global normal <F6> ':extend-line-down %val{count}<ret>'
+map global normal <F8> ':extend-line-up %val{count}<ret>'
+map global normal <F5> <a-h>
+# map global normal <F6> X
+map global normal <F7> <a-l>
+#map global normal <F8>
+#
+# map global insert <F6> <c-n> 
+# map global insert <F8> <c-p> 
+# map global insert <F5> '<c-n><c-o>'
+# map global normal <F6> x
+# map global insert <F7> <c-o>
+
+#r mod
+map global normal <c-F5> ": phantom-selection-iterate-prev<ret>"
+map global normal <c-F6> C
+map global normal <c-F7> ": phantom-selection-iterate-next<ret>"
+map global normal <c-F8> 'kC'
+map global insert <c-F7> "<esc>: phantom-selection-iterate-next<ret>i"
+map global insert <c-F5> "<esc>: phantom-selection-iterate-prev<ret>i"
+
+map global normal <F9> <a-n> 
+# map global normal <F10> ":select<ret>a" 
+map global normal <F10> '*%s<ret>' -docstring 'select all'
+map global normal <F11> n
+map global normal <F12> '*/<ret>'
+
+map global normal <s-F9> <a-N> 
+# map global normal <s-F10> n 
+map global normal <s-F11> N
+# map global normal <s-F12> n
+
+#map global normal tab \>
+#map global normal <s-tab> <
+
+
+#map global normal d b
+#map global normal <a-d> <a-b>
+#map global normal <s-d> <s-b>
+#map global normal <c-d> <c-b>
+map global goto   h c
+map global view   o v
+#
+map global normal  u c
+
+#map global normal p w
+#map global normal <a-p> <a-w>
+#map global normal <s-p> <s-w>
+#map global normal <c-p> <c-w>
+
+map global normal \" < 
+map global normal \' > 
+
+map global normal a i
+map global normal k o
+map global normal K <a-o>
+map global normal A a
+map global normal h g
+map global normal H G
+map global normal b O
+map global normal B <a-O>
+
+# map global normal b n
+#map global normal B N
+
+map global normal e /
+map global normal E s
+map global normal g d
+map global normal o v
+map global normal Y m
+# map global normal y f
+#map global normal Y F
+map global normal i x
+#map global normal I <s-x>
+map global normal f u
+map global normal F U
+map global normal m <space>
+map global normal v <semicolon>
+# map global normal d y
+
+# map global normal <space> ,
+# map global normal <s-m> <s-p>
+# map global normal <s-t> t
+
+map global normal I <percent>
+#swapcase
+map global normal <c-i> <a-`> 
+map global normal <a-i> <a-`> 
+
+map global normal r :
+# map global normal ä /
+
+map global normal <space> ,
+
+map global normal d '<a-|>xclip -i -selection clipboard<ret>'
+map global normal D y
+# Paste
+map global normal P <a-p>
+map global normal <c-p> -docstring 'Paste (After)' '<a-o>o<esc>|xclip -out -selection clipboard<ret>'
+map global normal p -docstring 'Paste (Before)' '!xclip -out -selection clipboard<ret>'
+map global normal <c-p> -docstring 'Replace' '|xclip -out -selection clipboard<ret>'
+# # # map global normal , <space>
+#map global user a ': fzf-mode<ret>'
+
+define-command -hidden -override motion-select-word-l %{
+    execute-keys 'aⓏ<esc>'
+    execute-keys ':easy-motion-b<ret>'
+    hook window -once NormalIdle .* %{
+        exec '<esc><a-;> fⓏa<backspace><esc> <a-;>Zuuz' 
+    }
+}
+
+define-command motion-line-word-u %{
+    execute-keys ':easy-motion-k<ret>'
+    hook window -once NormalIdle .* %{
+        exec ':easy-motion-w<ret>' 
+    }
+}
+
+define-command motion-line-word-d %{
+    execute-keys ':easy-motion-j<ret>'
+    hook window -once NormalIdle .* %{
+        exec ':easy-motion-w<ret>' 
+    }
+}
+
+
+define-command -hidden -override motion-select-word-r %{
+    execute-keys 'iⓏ<esc>'
+    execute-keys ':easy-motion-w<ret>'
+    hook window -once NormalIdle .* %{
+        exec '<esc> <a-f>Ⓩi<del><esc> <a-;>Zuuz' 
+    }
+}
+
+
+
+
+declare-option str firstkey ''
+define-command easy-motion-test %{
+  on-key %{
+    set-option buffer firstkey %val{key}
+    on-key %{
+      easy-motion-on-regex "\Q%opt{firstkey}%val{key}\E" 'bglGt'
+    }
+  }
+}
+
+# # map global user <space> "gt:easy-motion-test<ret>"
+map global user <ret> "gt:easy-motion-f<ret>"
+# map global user <ret> ":easy-motion-alt-f<ret>"
+map global user n "j: easy-motion-j<ret>"
+map global user l ": easy-motion-k<ret>"
+map global user ä ": easy-motion-char<ret>"
+map global user s ": easy-motion-w<ret>"
+map global user t ": easy-motion-b<ret>"
+map global user T ": motion-select-word-l<ret>"
+map global user S ": motion-select-word-r<ret>"
+map global user f ": motion-select-word-l<ret>"
+map global user p ": motion-select-word-r<ret>"
+map global user L ": motion-line-word-u<ret>" -docstring 'line up then word'
+map global user N ": motion-line-word-d<ret>" -docstring 'line down then word'
+
+
+
+
+map global normal q ":comment-line<ret>"
+map global normal Q ":comment-block<ret>"
+
+map global normal å ":format<ret>"
+
+map global user y ":w<ret>"
+
+declare-user-mode surround
+map global surround ö ':surround<ret>' -docstring 'surround'
+map global surround u ':change-surround<ret>' -docstring 'change'
+map global surround g ':delete-surround<ret>' -docstring 'delete'
+map global surround e ':select-surrounding-tag<ret>' -docstring 'select tag'
+map global normal ö ':enter-user-mode surround<ret>'
+# map global normal ö ':surround<ret>'
+# map global sorround h ':surround-with-tag<ret>' -docstring 'surround with tag'
+# map 
+# map global user   <a-l>  ':select-surrounding-tag<ret>'
+# map global user   <c-l>  ':select-surround<ret>'
+
+#####nnn
+map global user i ':alacritty-terminal-window <ret> ' 
+map global user I ':alacritty-buffer<ret>' -docstring 'new terminal @ buffer file' 
+
+define-command -hidden -override move-line-down %{
+    exec <a-x> d g l p j g l 
+}
+define-command -hidden -override move-selection-line-down %{
+    exec i Ⓩ  <esc> H d j P h <a-f> Ⓩ i <del> <esc> 
+}
+define-command -hidden -override move-line-up %{
+    exec <a-x> d k P k 
+}
+define-command -hidden -override move-selection-line-up %{
+    exec i Ⓩ <esc> H d k P h <a-f> Ⓩ i <del> <esc> 
+}
+define-command -hidden -override move-selection-word-right %{
+    exec d W <a-p>
+}
+define-command -hidden -override move-selection-word-left %{
+    exec d B <a-P>
+}
+define-command motion-bracket %{
+    execute-keys "gt: easy-motion-on-regex '\{' 'bGl'<ret>" #} 
+    hook window -once NormalIdle .* %{
+        exec '<a-i>B' 
+    }
+}
+
+map global normal ⓝ ': move-selection-line-down<ret>'
+map global normal ⓛ ': move-selection-line-up<ret>'
+map global normal ⓣ ': move-selection-word-left<ret>'
+map global normal ⓢ ': move-selection-word-right<ret>'
+
+
+map global normal j     ": phantom-selection-add-selection<ret>"
+map global normal <s-j>     ": phantom-selection-select-all; phantom-selection-clear<ret>"
+map global normal <c-F3> ": phantom-selection-iterate-next<ret>"
+map global normal <c-F1> ": phantom-selection-iterate-prev<ret>"
+
+map global normal y ': enter-user-mode sel<ret>' -docstring 'selectors'
+# inner object <a-i>
+# whole object <a-a>
+declare-user-mode sel
+declare-user-mode par
+map global sel 'e' '<a-i>b: enter-user-mode par<ret>'
+map global par 'l' '<a-a>b' -docstring 'outer object'
+# map global par 't' '<a-[>' -docstring 'outer object'
+
+# map global sel 'A' "gt: easy-motion-on-regex '(?<=\{).+?(?=\})' 'bGl'<ret>"
+# (\{(?:\{??{^\{}*?\}))
+# (?<=\{).+?(?=\})
+# (\[(?:\[??[^\[]*?\]))
+
+# # map global par 'e' ':delete-surround<ret>(<space>' -docstring 'delete'
+map global par 'a' ':change-surround<ret>({' -docstring '{}'
+map global par 'g' ':change-surround<ret>([' -docstring '[]'
+map global par 't' ':change-surround<ret>(t' -docstring '""'
+map global par 's' ":change-surround<ret>(s" -docstring ''''
+map global par 'r' ':change-surround<ret>(r' -docstring '``'
+map global par 'i' ':change-surround<ret>(<' -docstring '<>'
+map global par 'h' ':change-surround<ret>(<' -docstring '<>'
+
+declare-user-mode mas
+map global sel 'a' '<a-i>B: enter-user-mode mas<ret>'
+map global sel 'A' ": motion-bracket<ret>"
+map global mas 'e' ':change-surround<ret>{(' -docstring '()'
+# # map global mas 'a' ':delete-surround<ret>{<space>' -docstring 'delete'
+map global mas 'g' ':change-surround<ret>{[' -docstring '[]'
+map global mas 't' ':change-surround<ret>{t' -docstring '""'
+map global mas 's' ":change-surround<ret>{s" -docstring ''''
+map global mas 'r' ':change-surround<ret>{r' -docstring '``'
+map global mas 'i' ':change-surround<ret>{<' -docstring '<>'
+map global mas 'h' ':change-surround<ret>{<' -docstring '<>'
+
+
+declare-user-mode hak
+map global sel 'g' '<a-i>[: enter-user-mode hak<ret>'
+map global hak 'e' ':change-surround<ret>[(' -docstring '()'
+map global hak 'a' ':change-surround<ret>[{' -docstring '{}'
+# # map global hak 'g' ':delete-surround<ret>[<space>' -docstring '[]'
+map global hak 't' ':change-surround<ret>[t' -docstring '""'
+map global hak 's' ":change-surround<ret>[s" -docstring ''''
+map global hak 'r' ':change-surround<ret>[r' -docstring '``'
+map global hak 'i' ':change-surround<ret>[<' -docstring '<>'
+map global hak 'h' ':change-surround<ret>[<' -docstring '<>'
+
+declare-user-mode quo
+map global sel 't' '<a-i>Q: enter-user-mode quo<ret>'
+map global quo 'e' ':change-surround<ret>"(' -docstring '()'
+map global quo 'a' ':change-surround<ret>"{' -docstring '{}'
+map global quo 'g' ':change-surround<ret>"[' -docstring '[]'
+# # map global quo 't' ':delete-surround<ret>"<space>' -docstring 'delete'
+map global quo 's' ":change-surround<ret>""s" -docstring ''''
+map global quo 'r' ':change-surround<ret>"r' -docstring '``'
+map global quo 'i' ':change-surround<ret>"<' -docstring '<>'
+map global quo 'h' ':change-surround<ret>"<' -docstring '<>'
+
+declare-user-mode squo
+map global sel 's' '<a-i>'': enter-user-mode squo<ret>'
+map global squo 'e' ':change-surround<ret>''(' -docstring '()'
+map global squo 'a' ':change-surround<ret>''{' -docstring '{}'
+map global squo 'g' ':change-surround<ret>''[' -docstring '[]'
+map global squo 't' ':change-surround<ret>''t' -docstring '""'
+# # map global squo 's' ":delete-surround<ret>''<space>" -docstring 'delete'
+map global squo 'r' ':change-surround<ret>''r' -docstring '``'
+map global squo 'i' ':change-surround<ret>''<' -docstring '<>'
+map global squo 'h' ':change-surround<ret>''<' -docstring '<>'
+
+declare-user-mode ang
+map global sel 'i' '<a-i>a: enter-user-mode ang<ret>'
+map global sel 'h' '<a-i>a: enter-user-mode ang<ret>'
+map global ang 'e' ':change-surround<ret><(' -docstring '()'
+map global ang 'a' ':change-surround<ret><{' -docstring '{}'
+map global ang 'g' ':change-surround<ret><[' -docstring '[]'
+map global ang 't' ':change-surround<ret><t' -docstring '""'
+map global ang 's' ":change-surround<ret><s" -docstring ''''
+map global ang 'r' ':change-surround<ret><r' -docstring '``'
+map global ang 'i' ':delete-surround<ret><m' -docstring 'delete'
+map global ang 'h' ':delete-surround<ret><' -docstring 'delete'
+
+declare-user-mode grv
+map global sel 'r' '<a-i>``: enter-user-mode grv<ret>'
+map global grv 'e' ':change-surround<ret>`(' -docstring '()'
+map global grv 'a' ':change-surround<ret>`{' -docstring '{}'
+map global grv 'g' ':change-surround<ret>`[' -docstring '[]'
+map global grv 't' ':change-surround<ret>`t' -docstring '""'
+map global grv 's' ":change-surround<ret>`s" -docstring ''''
+map global grv 'r' ':delete-surround<ret>`m' -docstring 'delete'
+map global grv 'i' ':change-surround<ret>`<' -docstring '<>'
+map global grv 'h' ':change-surround<ret>`<' -docstring '<>'
+
+
+# map global normal <F18> ': enter-user-mode selectors<ret>' -docstring 'selectors'
+map global selectors 'y' '<esc>:rainbow-enable-window<ret>' -docstring 'enable rainbow'
+map global selectors 'o' '<esc>:rainbow-disable-window<ret>' -docstring 'disable rainbow'
+
+map global selectors 'q' '*%s<ret>' -docstring 'select all'
+
+map global selectors 'n' '<a-i>' -docstring 'select inside object <a-i>'
+map global selectors 'l' '<a-a>' -docstring 'select outside object <a-a>'
+
+map global selectors 't' '<a-[>' -docstring 'select inner object start <a-[>'
+map global selectors 's' '<a-]>' -docstring 'select inner object end <a-]>'
+map global selectors 'T' '<a-{>' -docstring 'extend inner object start <a-{>'
+map global selectors 'S' '<a-}>' -docstring 'extend inner object end <a-}>'
+
+map global selectors 'e' '[' -docstring 'select object start ['
+map global selectors 'u' ']' -docstring 'select object end ]'
+map global selectors 'H' '{' -docstring 'extend object start {'
+map global selectors 'L' '}' -docstring 'extend object end }'
+map global object 'e'    '<esc>: text-object-block (<ret>'    -docstring 'prev parenthesis block'
+map global object 'ö'    '<esc>: text-object-block )<ret>'    -docstring 'next parenthesis block'
+map global object 'a'    '<esc>: text-object-block {<ret>'    -docstring 'prev braces block'
+map global object 'u'    '<esc>: text-object-block }<ret>'    -docstring 'next braces block'
+map global object 'g'    '<esc>: text-object-block [<ret>'    -docstring 'prev brackets block'
+map global object 'k'    '<esc>: text-object-block ]<ret>'    -docstring 'next brackets block'
+map global object 'h' '<esc>: text-object-block <lt><ret>' -docstring 'prev angle block'
+map global object 'å' '<esc>: text-object-block <gt><ret>' -docstring 'next angle block'
+# additional text objects
+map global object 'i'     '<esc>: text-object-line<ret>'               -docstring 'line'
+map global object 'h'     '<esc>: text-object-tag<ret>'                -docstring 'tag'
+map global object 'b'     '<esc>: text-object-buffer<ret>'             -docstring 'buffer'
+map global object '<tab>' '<esc>: text-object-indented-paragraph<ret>' -docstring 'indented paragraph'
