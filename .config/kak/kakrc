@@ -33,6 +33,7 @@ plug-chain "https://github.com/crizan/kak-rainbower" %{
   set-option global fzf_terminal_command 'alacritty-fzf'
   set-option global fzf_file_preview true
   set-option global fzf_highlight_command 'bat'
+  set-option global fzf_file_command "fd -I --exclude .git --exclude node_modules "
   # map global user a ': fzf-mode<ret>' -docstring 'fzf'
   # }
 } plug 'delapouite/kakoune-buffers' %{
@@ -47,13 +48,6 @@ plug-chain "https://github.com/crizan/kak-rainbower" %{
   map global user ö ':delete-buffer<ret>'
   # map global user <s-ö> ':delete-buffer!<ret>'
 } plug "danr/kakoune-easymotion" %{
-} plug "occivink/kakoune-snippets" config %{
-    set-option -add global snippets_directories "~/.config/kak/plugins/kakoune-snippet-collection/"
-    # some other kakoune-snippets related configurations
-} plug "andreyorst/kakoune-snippet-collection" %{
-# plug "lePerdu/kakboard" %{
-    # hook global WinCreate .* %{ kakboard-enable }
-# }
 } plug "JJK96/kakoune-emmet" %{
   map global insert <c-ret> "<esc>x: emmet<ret>" 
 
@@ -80,10 +74,6 @@ define-command -override alacritty-buffer -params .. -docstring 'alacritty-termi
     alacritty msg create-window --working-directory "${kak_buffile%/*}" --command sh -c 'export KAKOUNE_SESSION=$1 KAKOUNE_CLIENT=$2 && shift 2 && exec "$@"' -- "$kak_session" "$kak_client" "${@:-$SHELL}"
   }
 }
-
-
-
-
 
 # set-option global fzf_terminal_command 'terminal kak -c %val{session} -e "%arg{@}"'
 set-option global ui_options terminal_status_on_top=true
@@ -117,21 +107,28 @@ evaluate-commands %sh{
 # map -docstring 'git (popup)' global normal <c-l> ': connect terminal-popup gitui<ret>'
 # map -docstring 'file explorer' global normal <c-e> ': connect terminal-panel sidetree --select %val{buffile}<ret>'
 # map -docstring 'file picker' global user v ': connect terminal kcr fzf files<ret>'
-# map -docstring 'buffer picker' global user m ': connect terminal kcr fzf buffers<ret>'
+# map -docstring 'buffer picker' global user m ': connect terminal kcr-fzf-buffers<ret>'
 # map -docstring 'buffer picker' global user m ': connect run kitty --name fzf kcr-fzf-buffers<ret>'
 map -docstring 'cd fzf' global user c ': fzf-cd<ret>'
 map -docstring 'buffer picker' global user m ': fzf-buffer<ret>'
+map -docstring 'file picker' global user a ': fzf-file<ret>'
 map -docstring 'buffer search' global user e ': fzf-buffer-search<ret>'
+map -docstring 'file grepper' global user j ': fzf-grep<ret>'
+# map -docstring 'file grepper' global user g ': fzf-delete-buffer<ret>'
+# map -docstring 'search' global user E ': fzf-search<ret>'
+
+
 # map -docstring 'file picker' global user a ': connect run kitty --name fzf sh -c kcr-fzf-files -I<ret>'
-map -docstring 'file picker' global user a ': alacritty-fzf kcr-fzf-files -I --exclude .git --exclude void-packages --exclude node_modules<ret>'
-map -docstring 'grep picker' global user j ': alacritty-fzf kcr-fzf-grep<ret>'
+# map -docstring 'file picker' global user a ': alacritty-fzf kcr-fzf-files -I --exclude .git --exclude void-packages --exclude node_modules<ret>'
+# map -docstring 'grep picker' global user j ': alacritty-fzf kcr-fzf-grep<ret>'
+# map -docstring 'grep picker' global user E ': alacritty-fzf kcr-edit-search<ret>'
 # map -docstring 'grep picker' global user j ': fzf-grep<ret>'
-map -docstring 'grep picker' global user J ': alacritty-fzf kcr-fzf-grep %{buflist}<ret>'
+# map -docstring 'grep picker' global user J ': alacritty-fzf kcr-fzf-grep %{buflist}<ret>'
 map -docstring 'fm' global user h ': alacritty-fzf nnn<ret>'
 map -docstring 'gitui' global user z ': alacritty-fzf gitui<ret>'
 map -docstring 'last buffer' global user f ': buffer-last<ret>'
-map -docstring 'next buffer' global user p ': buffer-next<ret>'
-map -docstring 'previous buffer' global user d ': buffer-previous<ret>'
+# map -docstring 'next buffer' global user p ': buffer-next<ret>'
+# map -docstring 'previous buffer' global user d ': buffer-previous<ret>'
 
 # map -docstring 'grep picker (buffer)' global user x ': connect terminal kcr fzf grep %val{buflist}<ret>'
 # require-module connect-nnn
@@ -146,7 +143,7 @@ hook global ModuleLoaded kitty %{
 set-option global windowing_modules 'x11'
 #set-option global auto_pairs ( ) { } [ ] '"' '"' "'" "'" ` ` “ ” ‘ ’ « » ‹ ›
 set global ui_options terminal_assistant=none
-colorscheme cherry
+colorscheme catppuccin_mocha
 # colorscheme warm
 
 
@@ -226,7 +223,7 @@ map global normal <a-n> pagedown
 map global normal <s-n> <s-j>
 # map global normal <c-n> <c-j>
 map global goto   n b
-map global goto   N j
+#map global goto   N j
 map global view   n t
 
 map global normal l k
@@ -234,7 +231,7 @@ map global normal <a-l> pageup
 map global normal <s-l> <s-k>
 # map global normal <c-l> <c-k>
 map global goto   l t
-map global goto   L k
+#wap global goto   <s-l> k
 map global view   l b
 
 map global normal s l
@@ -243,11 +240,16 @@ map global normal <s-s> <s-l>
 map global normal <c-s> <c-l>
 map global goto   s l
 
-map global insert <c-t> <esc>bdi 
+map global insert ⓣ <esc>bdi 
 map global insert <F1> <esc>bi 
-map global insert <c-s> <esc>wdi 
+map global insert ⓢ <esc>wdi 
 map global insert <F3> <esc>Wi 
 
+
+# map global normal ⓝ ': move-selection-line-down<ret>'
+# map global normal ⓛ ': move-selection-line-up<ret>'
+# map global insert ⓣ  qn <ret>'
+# map global normal ⓢ ': move-selection-word-right<ret>'
 
 #space mod
 map global normal <F1> b
@@ -258,10 +260,11 @@ map global normal <s-F1> B
 map global normal <s-F3> W
 
 #h mod
-def -params 1 extend-line-down %{
+def -hidden -params 1 extend-line-down %{
   exec "<a-:>%arg{1}X"
 }
 def -params 1 extend-line-up %{
+  # exec "<a-:><a-;>%arg{1}K<a-x>"
   exec "<a-:><a-;>%arg{1}K<a-;>"
   try %{
     exec -draft ';<a-K>\n<ret>'
@@ -273,7 +276,7 @@ def -params 1 extend-line-up %{
 map global normal <F6> ':extend-line-down %val{count}<ret>'
 map global normal <F8> ':extend-line-up %val{count}<ret>'
 map global normal <F5> <a-h>
-# map global normal <F6> x
+# map global normal <F6> X
 map global normal <F7> <a-l>
 #map global normal <F8>
 #
@@ -350,7 +353,7 @@ map global normal m <space>
 map global normal v <semicolon>
 # map global normal d y
 
-map global normal <space> ,
+# map global normal <space> ,
 # map global normal <s-m> <s-p>
 # map global normal <s-t> t
 
@@ -373,10 +376,11 @@ map global normal d '<a-|>xclip -i -selection clipboard<ret>'
 map global normal D y
 # Paste
 map global normal P <a-p>
+map global normal <a-p> P
 map global normal <c-p> -docstring 'Paste (After)' '<a-o>o<esc>|xclip -out -selection clipboard<ret>'
 map global normal p -docstring 'Paste (Before)' '!xclip -out -selection clipboard<ret>'
 map global normal <c-p> -docstring 'Replace' '|xclip -out -selection clipboard<ret>'
-# map global normal , <space>
+# # # map global normal , <space>
 #map global user a ': fzf-mode<ret>'
 
 define-command -hidden -override motion-select-word-l %{
@@ -423,7 +427,7 @@ define-command easy-motion-test %{
   }
 }
 
-map global user <space> "gt:easy-motion-test<ret>"
+# # map global user <space> "gt:easy-motion-test<ret>"
 map global user <ret> "gt:easy-motion-f<ret>"
 # map global user <ret> ":easy-motion-alt-f<ret>"
 map global user n "j: easy-motion-j<ret>"
@@ -564,7 +568,7 @@ map global par 'l' '<a-a>b' -docstring 'outer object'
 # (?<=\{).+?(?=\})
 # (\[(?:\[??[^\[]*?\]))
 
-map global par 'e' ':delete-surround<ret>(<space>' -docstring 'delete'
+# # map global par 'e' ':delete-surround<ret>(<space>' -docstring 'delete'
 map global par 'a' ':change-surround<ret>({' -docstring '{}'
 map global par 'g' ':change-surround<ret>([' -docstring '[]'
 map global par 't' ':change-surround<ret>(t' -docstring '""'
@@ -577,7 +581,7 @@ declare-user-mode mas
 map global sel 'a' '<a-i>B: enter-user-mode mas<ret>'
 map global sel 'A' ": motion-bracket<ret>"
 map global mas 'e' ':change-surround<ret>{(' -docstring '()'
-map global mas 'a' ':delete-surround<ret>{<space>' -docstring 'delete'
+# # map global mas 'a' ':delete-surround<ret>{<space>' -docstring 'delete'
 map global mas 'g' ':change-surround<ret>{[' -docstring '[]'
 map global mas 't' ':change-surround<ret>{t' -docstring '""'
 map global mas 's' ":change-surround<ret>{s" -docstring ''''
@@ -590,7 +594,7 @@ declare-user-mode hak
 map global sel 'g' '<a-i>[: enter-user-mode hak<ret>'
 map global hak 'e' ':change-surround<ret>[(' -docstring '()'
 map global hak 'a' ':change-surround<ret>[{' -docstring '{}'
-map global hak 'g' ':delete-surround<ret>[<space>' -docstring '[]'
+# # map global hak 'g' ':delete-surround<ret>[<space>' -docstring '[]'
 map global hak 't' ':change-surround<ret>[t' -docstring '""'
 map global hak 's' ":change-surround<ret>[s" -docstring ''''
 map global hak 'r' ':change-surround<ret>[r' -docstring '``'
@@ -602,7 +606,7 @@ map global sel 't' '<a-i>Q: enter-user-mode quo<ret>'
 map global quo 'e' ':change-surround<ret>"(' -docstring '()'
 map global quo 'a' ':change-surround<ret>"{' -docstring '{}'
 map global quo 'g' ':change-surround<ret>"[' -docstring '[]'
-map global quo 't' ':delete-surround<ret>"<space>' -docstring 'delete'
+# # map global quo 't' ':delete-surround<ret>"<space>' -docstring 'delete'
 map global quo 's' ":change-surround<ret>""s" -docstring ''''
 map global quo 'r' ':change-surround<ret>"r' -docstring '``'
 map global quo 'i' ':change-surround<ret>"<' -docstring '<>'
@@ -614,7 +618,7 @@ map global squo 'e' ':change-surround<ret>''(' -docstring '()'
 map global squo 'a' ':change-surround<ret>''{' -docstring '{}'
 map global squo 'g' ':change-surround<ret>''[' -docstring '[]'
 map global squo 't' ':change-surround<ret>''t' -docstring '""'
-map global squo 's' ":delete-surround<ret>''<space>" -docstring 'delete'
+# # map global squo 's' ":delete-surround<ret>''<space>" -docstring 'delete'
 map global squo 'r' ':change-surround<ret>''r' -docstring '``'
 map global squo 'i' ':change-surround<ret>''<' -docstring '<>'
 map global squo 'h' ':change-surround<ret>''<' -docstring '<>'
@@ -643,11 +647,9 @@ map global grv 'i' ':change-surround<ret>`<' -docstring '<>'
 map global grv 'h' ':change-surround<ret>`<' -docstring '<>'
 
 
-
-
 # map global normal <F18> ': enter-user-mode selectors<ret>' -docstring 'selectors'
-map global selectors 'y' '<esc>:rainbow-enable-window<ret>' -docstring 'enable rainbow'
-map global selectors 'o' '<esc>:rainbow-disable-window<ret>' -docstring 'disable rainbow'
+map global sel 'y' '<esc>:rainbow-enable-window<ret>' -docstring 'enable rainbow'
+map global sel 'o' '<esc>:rainbow-disable-window<ret>' -docstring 'disable rainbow'
 
 map global selectors 'q' '*%s<ret>' -docstring 'select all'
 
@@ -685,13 +687,14 @@ map global lsp 'ö' %{:rmhl window/number-lines_-separator_\ _-hlcursor<ret>:set
 
 
 
+add-highlighter shared/alignment-tabs show-whitespaces -tab '│' -tabpad ' ' -spc ' ' -lf ' ' -nbsp ' '
 
-
+add-highlighter shared/alignment-spaces replace-ranges alignment_spaces_specs
 
 declare-option -hidden range-specs alignment_spaces_specs
 define-command -hidden -override update-alignment-spaces %{
     try %[ eval -draft %{
-        exec <percent> s ^ <space> <ret>
+# #         exec <percent> s ^ <space> <ret>
         exec w s <space> { %opt{indentwidth} } <ret> '<a-;>' ';'
         set-option window alignment_spaces_specs %val{timestamp}
         eval -itersel %{
@@ -709,6 +712,8 @@ define-command window-remove-alignment %{
 define-command window-enable-alignment-tabs %{
     add-highlighter window/alignment-tabs ref -passes move alignment-tabs
 }
+
+
 define-command window-enable-alignment-spaces %{
     hook window -group alignment NormalIdle .* update-alignment-spaces
     hook window -group alignment InsertIdle .* update-alignment-spaces
@@ -717,5 +722,5 @@ define-command window-enable-alignment-spaces %{
         "( ) {%sh{ let ""x = $kak_opt_indentwidth - 1""; echo $x }}" 1:Whitespace
 }
 
-add-highlighter shared/alignment-tabs show-whitespaces -tab '│' -tabpad ' ' -spc ' ' -lf ' ' -nbsp ' '
-add-highlighter shared/alignment-spaces replace-ranges alignment_spaces_specs
+
+

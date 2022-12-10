@@ -5,6 +5,7 @@ function entries() {
   echo show
   echo stack
   echo tab
+  echo tabnext
   echo splith
   echo splitv
 }
@@ -34,6 +35,10 @@ case $selections in
   tab)
     i3-msg layout tabbed
     ;;
+  tabnext)
+    i3-msg split v
+    i3-msg layout tabbed
+    ;;
   splith)
     i3-msg layout splith
     ;;
@@ -48,3 +53,4 @@ case $selections in
     echo -n "unknown"
     ;;
 esac
+
