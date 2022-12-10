@@ -1,0 +1,109 @@
+(deflisten bindingstate "scripts/bindingstate")
+
+;;(deflisten gws "scripts/gws")
+(defpoll gws :interval "200ms"
+	"scripts/gws")
+
+(defwidget ws []
+
+  (box :orientation "v"
+		 :space-evenly "false" 
+		 :valign "end" 
+		 :spacing 5
+  	 :class  "workspace"
+  (for entry in gws
+		(box :orientation "v"
+         :spacing 2
+    (button :onclick "notify-send 'click' 'button ${entry.name}'"
+      :class {entry.focused == true ? "active" : "inactive"}
+      {replace(entry.name, "[123456789]", "")})
+		(for mark in '${entry.windows}'
+			(button
+        :class {mark.focused == true ? "activew" : "inactivew"}
+        (box :class "icon" :spacing 20
+             "${matches(mark.name, 'Kakoune')
+                ? ""
+                :matches(mark.name, 'nnn')
+								? "n"
+                :mark.window_properties.class == 'Alacritty' 
+                ? ""
+    						: mark.window_properties.class == 'qutebrowser'
+    						? ""
+    						: mark.window_properties.class == 'discord'
+    						? "ﭮ"
+    						: mark.window_properties.class == 'Steam'
+            		?""
+    						: mark.window_properties.class == 'mpv'
+            		?""
+    						: mark.window_properties.class == 'Signal'
+            		?""
+    						: mark.window_properties.class == 'Chromium'
+    						? ""
+                : "?"}"(box :class "mark" "${mark.marks[0] == 'null' ? '' : mark.marks[0]}"))
+       ))
+   ))))
+;;  
+;; Clock Widgets ;;
+(defwidget time []
+	(box	:orientation "v" 
+			:class "time" 
+			:valign "end"
+	(box :class "time-hour" hour)
+	(box :class "time-min"  min)))
+(defpoll hour	:interval "1s"	"date '+%H'")
+(defpoll min	:interval "1s"	"date '+%M'")
+
+
+;; Top Widgets ;;
+(defwidget top []
+	(box	:orientation "v" 
+			:space-evenly "false" 
+			:valign "start" 
+(time)
+(ws)))
+
+;; Bottom Widgets ;;
+(defwidget bottom []
+	(box	:orientation "v" 
+			:space-evenly false 
+))
+
+;; End Widgets ;;
+(defwidget end []
+	(box :orientation "v" 
+		 :space-evenly "false" 
+		 :valign "end" 
+		 :spacing 5
+(bottom)))
+
+;; Bar Widgets ;;
+(defwidget bar []
+	(box :class "eww_bar" 
+		 :orientation "v" 
+		 :vexpand "false" 
+		 :hexpand "false"
+	  :class 	{bindingstate.name == "default" ? "defaultstate" : "otherstate"}
+
+(top)
+(end)))
+
+;; Bar Windows ;;
+(defwindow barr
+	:geometry (geometry :x "0" 
+						:y "0" 
+						:height "100%" 
+						:width "47px")
+  					:anchor "left"
+	:monitor 0
+	:reserve (struts :distance "45px" 
+					 :side "left")
+	:wm-ignore true
+	:windowtype "dialog"
+  :stacking "bg"
+	:hexpand "false"
+	:vexpand "false"
+(bar))
+
+
+
+
