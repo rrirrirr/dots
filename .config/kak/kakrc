@@ -687,11 +687,11 @@ map global lsp 'ö' %{:rmhl window/number-lines_-separator_\ _-hlcursor<ret>:set
 
 
 
-add-highlighter shared/alignment-tabs show-whitespaces -tab '│' -tabpad ' ' -spc ' ' -lf ' ' -nbsp ' '
-
-add-highlighter shared/alignment-spaces replace-ranges alignment_spaces_specs
-
 declare-option -hidden range-specs alignment_spaces_specs
+# add-highlighter shared/alignment-tabs show-whitespaces -tab '│' -tabpad ' ' -spc ' ' -lf ' ' -nbsp ' '
+
+# add-highlighter shared/alignment-spaces replace-ranges alignment_spaces_specs
+
 define-command -hidden -override update-alignment-spaces %{
     try %[ eval -draft %{
 # #         exec <percent> s ^ <space> <ret>
