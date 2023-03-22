@@ -104,7 +104,10 @@ remappings = {'h':'t',
 					'o':'p',
     			'O':'P',
 					'd':'g',
+					'D':'G',
+					'Y':'D',
 					'y':'d',
+					'u':'f',
 }
 remap_in_all_modes(remappings)
 c.bindings.commands['normal'] = {
@@ -430,7 +433,7 @@ config.bind('P', 'set statusbar.show always;; set-cmd-text -s :open -t')
 ## Type: QssColor
 # c.colors.statusbar.url.success.https.fg = 'lime'
 
-## Foreground color of the URL in the statusbar when there's a warning.
+# Foreground color of the URL in the statusbar when there's a warning.
 ## Type: QssColor
 # c.colors.statusbar.url.warn.fg = 'yellow'
 
@@ -1214,7 +1217,7 @@ c.content.blocking.method = 'auto'
 ## either a float value with a "pt" suffix, or an integer value with a
 ## "px" suffix.
 ## Type: String
-# c.fonts.default_size = '10pt'
+c.fonts.default_size = '14pt'
 
 ## Font used for the downloadbar.
 ## Type: Font
@@ -2034,8 +2037,8 @@ c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 
 ## Bindings for normal mode
 # config.bind("'", 'mode-enter jump_mark')
-# config.bind('+', 'zoom-in')
-# config.bind('-', 'zoom-out')
+config.bind('<Alt-v>', 'zoom-in')
+config.bind('<Alt-w>', 'zoom-out')
 # config.bind('.', 'repeat-command')
 # config.bind('/', 'set-cmd-text /')
 # config.bind(':', 'set-cmd-text :')
@@ -2072,6 +2075,8 @@ c.url.searchengines = {'DEFAULT': 'https://google.com/search?q={}'}
 # config.bind('<Ctrl-PgDown>', 'tab-next')
 # config.bind('<Ctrl-PgUp>', 'tab-prev')
 # config.bind('<Ctrl-Q>', 'quit')
+config.bind('D', 'nop')
+config.bind('<Shift-d>', 'nop')
 config.bind('<Ctrl-Escape>', 'spawn --userscript sessionsaver.py')
 # config.bind('<Ctrl-Return>', 'selection-follow -t')
 # config.bind('<Ctrl-Shift-N>', 'open -p')
@@ -2094,7 +2099,10 @@ config.bind('<Ctrl-Escape>', 'spawn --userscript sessionsaver.py')
 # config.bind('<Return>', 'selection-follow')
 # config.bind('<back>', 'back')
 # config.bind('<forward>', 'forward')
-# config.bind('=', 'zoom')
+# config.bind('v', 'zoom')
+config.bind('y', 'set tabs.show always')
+config.bind('Y', 'set tabs.show never')
+# config.bind('v', 'zoom-out')
 # config.bind('?', 'set-cmd-text ?')
 # config.bind('@', 'macro-run')
 # config.bind('B', 'set-cmd-text -s :quickmark-load -t')
@@ -2361,7 +2369,8 @@ config.bind(        '<Alt-d>' ,        'fake-key <Ctrl-c>', mode='insert')
 config.bind(        '<Ctrl-a>',         'fake-key <Home>', mode='insert')
 config.bind(        '<Ctrl-e>',         'fake-key <End>', mode='insert')
 config.bind(        '<Ctrl-n>',         'fake-key <Down>', mode='insert')
-config.bind(        '<Ctrl-p>',         'fake-key <Up>', mode='insert')
+config.bind(        '<Ctrl-p>',         'fake-key <Ctrl-v>', mode='insert')
+config.bind(        '<Ctrl-d>',         'fake-key <Ctrl-c>', mode='insert')
 config.bind(        '<Alt-v>' ,         'fake-key <PgUp>', mode='insert')
 config.bind(        '<Ctrl-v>',         'fake-key <PgDown>', mode='insert')
 config.bind(        '<F3>'    ,      'fake-key <Ctrl-Right>', mode='insert')
@@ -2377,10 +2386,20 @@ config.bind(        '<Ctrl-y>',         'insert-text {primary}', mode ='insert')
 config.bind(',k', 'spawn mpv {url}')
 config.bind('k', 'hint links spawn umpv {hint-url}')
 config.bind(';x', 'hint --rapid links spawn umpv {hint-url}')
-config.source('qutewal/qutewal.py')
-config.set("colors.webpage.darkmode.enabled", False)
+# config.source('qutewal/qutewal.py')
+# config.set("colors.webpage.darkmode.enabled", True)
+
+import catppuccin
+
+# load your autoconfig, use this if the rest of your config is empty!
+config.load_autoconfig()
+
+# set the flavour you'd like to use
+# valid options are 'mocha', 'macchiato', 'frappe', and 'latte'
+catppuccin.setup(c, 'mocha')
 
 # c.colors.webpage.bg = 'black'
 # c.colors.webpage.bg = '#151515'
-c.colors.webpage.bg = '#eeeeee'
+# c.colors.webpage.bg = '#1e1e2e'
+
 

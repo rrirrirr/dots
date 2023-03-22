@@ -4,7 +4,7 @@ function entries() {
   echo hide
   echo show
   echo stack
-  echo tab
+  echo tabnext
   echo splith
   echo splitv
 }
@@ -16,7 +16,8 @@ function entries() {
   # bash -c $@
 # fi
 
-selections=`entries | i3menu -a window -i l --theme dark`
+selections=`entries | rofi -dmenu `
+# selections=`entries | i3menu -a window -i l --theme dark`
 
 [ "$selections" = "" ] && exit
 
@@ -31,7 +32,8 @@ case $selections in
   stack)
     i3-msg layout stacking
     ;;
-  tab)
+  tabnext)
+    i3-msg split v
     i3-msg layout tabbed
     ;;
   splith)

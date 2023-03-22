@@ -2,7 +2,7 @@
 #
 
 declare -a queue=()
-declare -a chars=(a t e n i s o l g d h r)
+declare -a chars=(a t e n i s o l g d h r o l y p ä f u m k j b c ö v å w z q x)
 
 function findid() {
   found=0

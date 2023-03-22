@@ -1,48 +1,40 @@
 # i3 config file (v4)
-#
-# Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
 
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:monospace 8
+font pango:JetBrainsMono Nerd Font 10
 
+gaps left 90
+# gaps inner 3
+# for_window [title="bar"] gaps outer 22
 
-# gaps inner 0
-# gaps left 0
-# smart_gaps off
-# smart_borders on
-# default_border pixel 1
-
+# hide_edge_borders vertical
+mouse_warping none
 new_window none
 new_float none
 
 set_from_resource $fg i3wm.color7 #f0f0f0
 set $bg #00000000
-set $c1 #30063a
-set $c11 #50065a
-set $c2 #b03cff
+set $c1 #1e1e2e
+set $c11 #a6e3a1
+set $c2 #cdd6f4
 set $c3 #ff40ee
 set $c4 #00aaff
-set $c5 #12cbfe
-set $c6 #46a0ff
+set $c5 #1e1e2e
+set $c6 #94e2d5
 set $c7 #a08efe
-set $c8 #e5c5ef
+set $c8 #a6e3a1
 set $c9 #a089a7
 
 
-
 # class                 border  backgr. text indicator child_border
-client.focused          $c1     $c11     $c8  $c1       $bg
-client.focused_inactive $c1     $c1     $c2  $c1       $bg
-client.unfocused        $c1     $bg     $c2  $c1       $bg
+client.focused          $c1     $c11    $c1  $c1       $bg
+client.focused_inactive $c1     $c6     $c1  $c1       $bg
+client.unfocused        $c1     $c5     $c2  $c1       $bg
 client.urgent           $bg     $bg     $c8  $c1       $bg
 client.placeholder      $bg     $bg     $c8  $c1       $bg
 client.background       $bg
 
-# PROTIP: You can also dynamically set dmenu's colors this way:
-# bindsym $mod+d exec dmenu_run -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
 workspace_auto_back_and_forth no
 for_window [all] title_window_icon on
 for_window [all] title_window_icon padding 3px
@@ -51,87 +43,33 @@ for_window [class=".*"] title_format "<span letter_spacing='1100'>%class</span>"
 for_window [class="Alacritty"] title_format "<span letter_spacing='1100'>%title</span>"
 
 set $term "alacritty msg create-window --working-directory ~/ || alacritty"
+floating_modifier $mod
 
+
+# This script parses the installed i3 config file.
+# set $help exec --no-startup-id xfce4-terminal -T Bindings -x /bin/bash -c \
+#   "grep -v \# ~/.i3/config | grep -v 'bindsym [1-8] mode' \
+#    cpp - | grep -E 'bind|mode|bar|}' | sed 's/(standard input)://g' | less"
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+bindsym Control+Shift+Escape kill
+bindsym $mod+Shift+Escape [floating] kill
 
 set $left  t
 set $down  n
 set $up    l
 set $right s
 
-
-set $default exec --no-startup-id ~/local/i3/bin/i3-mode default
-set $primary exec --no-startup-id ~/local/i3/bin/i3-mode Primary
-set $secondary exec --no-startup-id ~/local/i3/bin/i3-mode Secondary
-
-# Helpers. Embedding the path explicitly is belt and braces.
-exec_always --no-startup-id i3-focus-last server
-
-
-set $i3cmdprompt exec --no-startup-id ~/local/i3/bin/i3-command-prompt
-set $i3configscripts exec --no-startup-id ~/local/i3/bin/i3-config-scripts
-set $i3dispatcher exec --no-startup-id ~/local/i3/bin/i3-dispatcher
-set $i3filewatcher exec_always --no-startup-id ~/local/i3/bin/i3-file-watcher
-set $i3marks exec --no-startup-id ~/local/i3/bin/i3-marks
-set $i3mode exec --no-startup-id ~/local/i3/bin/i3-mode
-set $i3mouse exec --no-startup-id ~/local/i3/bin/i3-mouse
-set $i3listwindows exec --no-startup-id ~/local/i3/bin/i3-list-windows
-# A wrapper around "i3status". Referenced in the i3bar declaration.
-set $i3barstatuscommand ~/local/i3/bin/i3-status
-# Use JSON IPC to control 'mpv' (from Tasker).
-
-# set $etcfilewatcher exec_always --no-startup-id ~/local/public/bin/etc-file-watcher
-
-# Refactoring the associated script(s) might require stubs.
-set $stub nop
-
-# This script parses the installed i3 config file.
-set $help exec --no-startup-id xfce4-terminal -T Bindings -x /bin/bash -c \
-  "grep -v \# ~/.i3/config | grep -v 'bindsym [1-8] mode' \
-   cpp - | grep -E 'bind|mode|bar|}' | sed 's/(standard input)://g' | less"
-
-
-# The standard terminal binding is defined at the head of this file.
-# EllaTheCat recommends terminal bindings with preceding splits.
-# bindsym $mod+t  split h,exec --no-startup-id xfce4-terminal -T "xfce4-terminal"
-# bindsym $mod+y  split v,exec --no-startup-id xfce4-terminal -T "xfce4-terminal"
-
-# Kill focused window.
-bindsym Control+Shift+Escape kill
-# Kill focused floating window. When killing popups this cannot kill
-# the (tiled) parent (as can happen by accident).
-bindsym $mod+Shift+Escape [floating] kill
-
-# Start dmenu (a program launcher).
-# bindsym $mod+d exec dmenu_run
-
-
-bindsym $mod+Control+f      exec --no-startup-id i3fyra --float
-# making a floating window tiled with the keybinding
-# above will automatically enable the i3fyra layout
-# on the active workspace.
-
-# splitsizes in the i3fyra layout
-# -----------------------------------------------
-set $layout 'AB=-350 AC=220 BD=252'
-
-# by executing below command with i3 the layout
-# will be configured before it is created
-exec --no-startup-id i3fyra --layout $layout
-
-# use this keybinding to restore the layout
-bindsym $mod+Shift+f exec --no-startup-id i3fyra --layout $layout       
-
-
 bindsym $mod+Tab              exec --no-startup-id i3flip next
 bindsym $mod+Shift+Tab        exec --no-startup-id i3flip perv
-
-
 
 bindsym $mod+t            exec --no-startup-id i3viswiz left
 bindsym $mod+n            exec --no-startup-id i3viswiz down
 bindsym $mod+l              exec --no-startup-id i3viswiz up
 bindsym $mod+s           exec --no-startup-id i3viswiz right
-
 
 bindsym $mod+Shift+t      move left
 bindsym $mod+Shift+n      move down
@@ -141,81 +79,21 @@ bindsym $mod+Control+t      move left
 bindsym $mod+Control+n      move down
 bindsym $mod+Control+l        move up
 bindsym $mod+Control+s     move right
-# bindsym $mod+Shift+t      exec --no-startup-id i3Kornhe move --speed 0 left
-# bindsym $mod+Shift+n      exec --no-startup-id i3Kornhe move --speed 0 down
-# bindsym $mod+Shift+l        exec --no-startup-id i3Kornhe move --speed 0 up
-# bindsym $mod+Shift+s     exec --no-startup-id i3Kornhe move --speed 0 right
-
-# bindsym $mod+Shift+$left            exec --no-startup-id i3fyra --move left
-# bindsym $mod+Shift+$down            exec --no-startup-id i3fyra --move down
-# bindsym $mod+Shift+$up              exec --no-startup-id i3fyra --move up
-# bindsym $mod+Shift+$right           exec --no-startup-id i3fyra --move right
 
 
-
-# change focus
-# bindsym $mod+t                       focus left
-# bindsym $mod+n                       focus down
-# bindsym $mod+l                       focus up
-# bindsym $mod+s                       focus right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left                    focus left
-bindsym $mod+Down                    focus down
-bindsym $mod+Up                      focus up
-bindsym $mod+Right                   focus right
-
-# move                       focused window
-# bindsym $mod+Shift+t                 move left
-# bindsym $mod+Shift+n                 move down
-# bindsym $mod+Shift+l                move up
-# bindsym $mod+Shift+s                 move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left              move left
-bindsym $mod+Shift+Down              move down
-bindsym $mod+Shift+Up                move up
-bindsym $mod+Shift+Right             move right
-
-# split in horizontal orientation
 bindsym $mod+w                       split h
-
-# split in vertical orientation
 bindsym $mod+v                       split v
 
-# enter fullscreen mode for the focused container
 bindsym $mod+o                       fullscreen toggle
+bindsym Control+Mod1+i				fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+Shift+w                 layout stacking
-#bindsym $mod+w                       layout tabbed
-#bindsym $mod+e                       layout toggle split
-
-# toggle tiling / floating
-floating_maximum_size 0 x 800
+# floating_maximum_size 0 x 800
 # for_window [floating] move position center
 bindsym $mod+Shift+space             floating toggle
+bindsym $mod+Return                  floating toggle
 
-# change focus between tiling / floating windows
-# bindsym $mod+space                   focus mode_toggle
-
-# focus the parent container
-#bindsym $mod+a                       focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
-
-# switch to workspace
-# bindcode $mod+43                       workspace 1; exec ~/scripts/hidebar
-# bindcode $mod+31                       workspace 2; exec ~/scripts/hidebar unhide
-# bindcode $mod+26                      workspace 3; exec ~/scripts/hidebar unhide
-# bindcode $mod+a                       workspace 4; exec ~/scripts/hidebar unhide
-# bindcode $mod+g                       workspace 5; exec ~/scripts/hidebar unhide
-# bindcode $mod+d                       workspace 6; exec ~/scripts/hidebar unhide
-#bindsym $mod+r                       workspace 7; exec ~/scripts/hidebar unhide
-#bindsym $mod+:                       workspace 8; exec ~/scripts/hidebar unhide
-
-
+bindsym $mod+Shift+a focus parent
+bindsym $mod+Shift+d focus child
 
 bindsym $mod+h                       workspace 1[H]
 bindsym $mod+i                       workspace 2[I]
@@ -225,13 +103,6 @@ bindsym $mod+g                       workspace 5[G]
 bindsym $mod+d                       workspace 6[D]
 bindsym $mod+9                       workspace 9
 bindsym $mod+0                       workspace 10
-
-bindsym Control+Mod1+o              workspace back_and_forth
- 
-# move focused container to workspace
-
-# workspace_auto_back_and_forth yes
-
 
 bindsym $mod+Control+h move container to workspace 1[H]
 bindsym $mod+Control+i move container to workspace 2[I]
@@ -244,82 +115,10 @@ bindsym $mod+Control+d move container to workspace 6[D]
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+s layout stacking
-# bindsym $mod+w layout tabbed
-# bindsym $mod+e layout toggle split
-
-# Focus the parent container. 'A' for adult.
-bindsym $mod+Shift+a focus parent
-# Focus the child container. 'D' for daughter.
-bindsym $mod+Shift+d focus child
-
-# resize window (you can also use the mouse for that)
-mode "resize" {
-       # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym t resize shrink width 10 px or 10 ppt
-        bindsym l resize grow height 10 px or 10 ppt
-        bindsym n resize shrink height 10 px or 10 ppt
-        bindsym s resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-
-#
-# CLASSIC BINDINGS END HERE.
-#
-
-
-
-
-# Menu is a design decision please do not change.
-# I have used 'xcape' to bind Super_L to Menu for the left hand.
-# Pressing cycles through the three modes. Def->Pri->Sec->Def.
-bindsym XF86MenuKB $primary
-bindsym Control+Mod1+$mod+z $secondary
-
-# bindsym Print $primary
-
-# KP_Insert is a design decision please do not change.
-# Command prompt in one keypress. Faciltates 3 digit commands.
-# bindsym Control+Print $i3cmdprompt menu 4
-
-# "HJKL" replaces "JKL:" because I'm used to "vi","b" can replace "h"
-# (for horizontal) because they look similar and it's adjacent to "v"
-# (for vertical).
-
-# Narcolepsy safety net.
-### TODO
-
-# -*- Mode: Shell-script -*-
-
-# Kill a window, kill a workspace.
-bindsym Control+Mod1+Delete kill
-bindsym Control+Mod4+Delete [workspace="__focused__"] kill
-
-# -*- Mode: Shell-script -*-
-#
-# Primary mode.
-# Use this mode for window management, not settings.
 mode "Primary" {
 
-    # Protect the exit from this mode.
-    # Using space is a design decision, please do not change.
-    bindsym space $default
-    bindsym Escape $default
+    bindsym space mode "default"
+    bindsym Escape mode "default"
 
     bindsym $left            exec --no-startup-id i3viswiz left
     bindsym $down            exec --no-startup-id i3viswiz down
@@ -335,173 +134,18 @@ mode "Primary" {
     bindsym Tab              exec --no-startup-id i3flip next
     bindsym Shift+Tab        exec --no-startup-id i3flip perv
 
-    # move                       focused window
     bindsym Shift+t                 move left
     bindsym Shift+n                 move down
     bindsym Shift+l                move up
     bindsym Shift+s                 move right
 
-
-    bindsym a exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Go to: '; \
-    	$default
-
-    bindsym z exec --no-startup-id i3zen --workspace zen
-
-    # focus the zen workspace
-    bindsym Shift+z workspace zen
-
-    bindsym e layout toggle splith tabbed 
-    bindsym i layout toggle splith splitv 
-
-    bindsym 1 $default, swap container with mark "casperl"
-    bindsym 2 $default, swap container with mark "casperr"
-
-
-
-
-
-
-    # # This is independent of the similarly named configuration setting.
-    # bindsym q $default, workspace back_and_forth
-
-    # # (W)orkspace. If the workspace does not exist beforehand it is
-    # # created, if it already exists, it is focused.
-    bindsym w $default, exec --no-startup-id i3-input -f $i3inputfont -l 2 \
-         -P '(workspace): ' -F 'workspace "%s"'
-
-    # # (R)ename a workspace.
-    bindsym r $default, exec --no-startup-id i3-input -f $i3inputfont -l 2 \
-            -P '(rename this workspace to): ' \
-            -F 'rename workspace to "%s"'
-
-    # # Launch a terminal. Including the preceding splits feels natural
-    # # to me. I urge you to try it.
-    # # bindsym t $default, split h, exec xfce4-terminal
-    # # bindsym y $default, split v, exec xfce4-terminal
-
-    # # Focus the workspace with the latest [u]rgency hint.
-    # # bindsym u $default, [urgent=latest] focus
-
-    # # [I]nfo on keyboard bindings. $help is available as a fallback.
-    # # https://github.com/glennular/i3help
-    # # https://www.reddit.com/r/i3wm/comments/k3ifyq/i3help_keyboard_binding_help_dialog_gtk/
-    # bindsym i $default, exec --no-startup-id i3help -f ~/.i3/config
-
-    # # P for Parent. O for Offspring.
-    # bindsym o $default, focus child
-    # bindsym p $default, focus parent
-
-    # # Scratchpad (generic) - equal is unshifted plus.
-    # bindsym minus $default, move scratchpad
-    # bindsym equal $default, scratchpad show
-    # bindsym grave $default, focus, floating toggle;
-
-    # # Scratchpad for the pulseaudio sound settings.
-    # bindsym bracketleft   $default, [title="Volume Control"] move scratchpad
-    # bindsym bracketright  $default, [title="Volume Control"] unmark, scratchpad show;
-
-    # # Command prompt. Thumb and middle finger of the left hand.
-    # bindsym Tab $default, $i3cmdprompt menu 4
-    # # The backslash to the left of Z on a UK keyboard US intl layout.
-    # bindcode 94 $default, $i3cmdprompt menu 4
-
-    # # Toggle a side-by-side pair to one-above-the-other.
-    # # A for Above.
-    # bindsym a $default, focus right, split v, focus left, move right, move up ;
-    # # Toggle a one-above-the-other pair to side-by-side.
-    # # S for Side by Side.
-    # bindsym s $default, focus down, split h, focus up, move down, move left;
-
-    # # Layouts. Unfortunately the t and tab keys are already allocated.
-    # bindsym d $default, layout default
-    # bindsym e $default, layout tabbed
-
-    # # Enter [f]ullscreen mode for the focused container.  This races
-    # # with the marks "service" that makes single windows floating with
-    # # a transpaent frame to reveal wallpaper. It is currently working
-    # # and robust but ideally these bindings should call into i3-marks.
-    # bindsym f $default, floating disable, fullscreen toggle;
-    # bindsym g $default, floating disable, fullscreen toggle global;
-
-    # # Increase or decrease the height or width symmetrically.
-    # # I orient myself by how the border separating windows moves.
-    # # Consider swapping the HL or JK directions if not to your liking.
-    # bindsym h resize grow right 6 px or 1 ppt, resize grow left 6 px or 1 ppt
-    # bindsym j resize shrink down 6 px or 1 ppt, resize shrink up 6 px or 1 ppt
-    # bindsym k resize grow up 6 px or 1 ppt, resize grow down 6 px or 1 ppt
-    # bindsym l resize shrink left 6 px or 1 ppt, resize shrink right 6 px or 1 ppt
-
-    # # Toggle between being a tiled|floating window.
-    # # Toggle focus between tiled|floating windows.
-    # bindsym semicolon floating toggle
-    # bindsym apostrophe focus mode_toggle
-
-    # bindsym Return nop
-
-    # # Move workspace to another output.
-    # # bindsym z $default, move workspace to output $lmon
-    # # bindsym x $default, move workspace to output $cmon
-    # # bindsym c $default, move workspace to output $rmon
-
-    # # Split directions.
-    # bindsym v split v
-    # bindsym b split h
-
-    # # Place a numeric mark on the focused window's title bar.
-    # # The mark is a two digit [n]umber.
-    # # Note: A command prompt version loses track of focus?
     bindsym h $default, $i3marks alphabetic
-
-    # # (M)ove container to named workspace.
-    # bindsym m $default, exec --no-startup-id i3-input -f $i3inputfont -l 2 \
-    #         -P '(move container to workspace): ' \
-    #         -F 'move container to workspace "%s"'
-
-    # # [D]menu showing window titles and their associated marks.
-    # # The use case is finding the title a mark is associated with.
-    # # Selecting an item visits the mark.
-    # bindsym comma $default, $i3listwindows menu column $lmon
-    # bindsym period $default, $i3listwindows menu column $cmon
-    # bindsym slash $default, $i3listwindows menu column $rmon
-
-    # Pressing cycles through the three modes. Pri->Sec->Def->Pri.
-    bindsym XF86MenuKB $secondary
-		bindsym Control+Mod1+$mod+z $secondary
-
-    # bindsym Print $secondary
 }
 
-# -*- Mode: Shell-script -*-
-#
-
-#
-# SECONDARY MODE BEGINS HERE.
-#
-
-# Secondary Mode.
-# Entered from primary mode using Menu.
-# Use this mode for settings, not window management.
 mode "Secondary" {
 
-    # Protect the exit from this mode.
-    # Using space is a design decision, please do not change.
-    bindsym space $default
-    bindsym Escape $default
-
-    bindsym q nop
-    bindsym w nop
-
-    bindsym r nop
-
-    bindsym y nop
-
-    bindsym i nop
-    bindsym o nop
-    bindsym p nop
-
-    bindsym bracketleft nop
-    bindsym bracketright nop
-
+    bindsym space mode "default"
+    bindsym Escape mode "default"
 
     bindsym t              exec --no-startup-id i3Kornhe size --speed 30 left
     bindsym n              exec --no-startup-id i3Kornhe size --speed 30 down
@@ -519,103 +163,12 @@ mode "Secondary" {
     bindsym Control+s      exec --no-startup-id i3Kornhe size --speed 200 right
 
 
-    bindsym Control+t				exec --no-startup-id i3viswiz left
-    bindsym Control+n				exec --no-startup-id i3viswiz down
-    bindsym Control+l				exec --no-startup-id i3viswiz up
-    bindsym Control+s				exec --no-startup-id i3viswiz right
+    bindsym Mod1+t				exec --no-startup-id i3viswiz left
+    bindsym Mod1+n				exec --no-startup-id i3viswiz down
+    bindsym Mod1+l				exec --no-startup-id i3viswiz up
+    bindsym Mod1+s				exec --no-startup-id i3viswiz right
 
-
-
-
-    # Select an audio output.
-    # bindsym a  $default, exec  --no-startup-id pactl move-sink-input \
-    #         "$(pactl list short sink-inputs | awk '{print $1}')" $analogaudiosink ;
-    # bindsym h  $default, exec  --no-startup-id pactl move-sink-input \
-    #         "$(pactl list short sink-inputs | awk '{print $1}')" $hdmiaudiosink ;
-    # bindsym b  $default, exec  --no-startup-id pactl move-sink-input \
-    #         "$(pactl list short sink-inputs | awk '{print $1}')" $bluetoothaudiosink ;
-    # bindsym u  $default, exec  --no-startup-id pactl move-sink-input \
-            # "$(pactl list short sink-inputs | awk '{print $1}')" $usbaudiosink ;
-
-    # Mnemonic mouse keys
-    # bindsym s $default, $i3mouse slow
-    # bindsym f $default, $i3mouse fast
-    # bindsym d $default, $i3mouse disable
-    # bindsym e $default, $i3mouse enable
-
-    # Set modifiers with 'xcape', set CapsLock to Control,
-    # mimic US layout on UK keyboard.
-    bindsym k $default, $i3keyboard
-
-    # Left / Right confirmation.
-    # bindsym l $default, exec mpv https://www.youtube.com/watch?v=6TWJaFD6R2s
-
-    bindsym v nop
-
-
-    bindsym comma nop
-    bindsym period nop
-    bindsym slash nop
-
-    # Pressing cycles through the three modes. Sec->Def->Pri->Sec.
-    bindsym XF86MenuKB $default
-    # bindsym Print $default
 }
-
-#
-# SECONDARY MODE ENDS HERE.
-#
-
-
-
-
-
-
-
-
-
-
-
-
-# for_window [class="alacritty"] border pixel 0
-# for_window [title="bar"] gaps outer 22
-
-# hide_edge_borders vertical
-mouse_warping none
-
-for_window [class="^.*"] border pixel 1
-for_window [con_mark="ncmp"] floating enable
-
-for_window [class="mpv"] floating enable, move absolute position 110 240, resize set 580 580
-for_window [class="imv"] floating enable, move absolute position 1010 240, resize set 380 380
-no_focus [class="imv"]
-
-for_window [class="Alacritty" instance="spotify-tui"] mark "music", floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
-for_window [class="Alacritty" instance="music"] floating enable, move scratchpad, move absolute position 200 40, resize set 1200 680, scratchpad show
-for_window [class="Alacritty" instance="alsamixer"] floating enable, scratchpad show, move scratchpad, move absolute position 180 220, resize set 1200 680, scratchpad show
-# for_window [class="Alacritty" instance="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
-for_window [class="fzf"] floating enable, scratchpad show, move scratchpad, move absolute position 280 20, resize set 1000 680, scratchpad show
-# for_window [class="Alacritty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
-for_window [class="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
-# for_window [class="Alacritty" instance="fzf"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show, focus
-for_window [class="st" instance="time"] floating enable, move absolute position 450 120, resize set 550 250, scratchpad show
-
-for_window [class="Alacritty" instance="code-tree"] move left, resize set width 200 px
-for_window [class="Alacritty" instance="code-side"] move right
-for_window [class="Alacritty" instance="code-main"] resize set width 1000 px
-
-for_window [class="st" instance="wttr"] floating enable, move scratchpad, move absolute position 280 120, resize set 770 550, scratchpad show
-for_window [class="Alacritty" instance="gotop"] floating enable, move scratchpad, move absolute position 380 320, resize set 770 350, scratchpad show
-for_window [class="Alacritty" instance="scli"] mark "signal", floating enable, move scratchpad, move absolute position 280 140, resize set 1000 580, scratchpad show
-for_window [class="Alacritty" instance="xcolor"] floating enable, move scratchpad, move absolute position 380 320, resize set 270 150, scratchpad show
-
-# no_focus [class="mpv"]
-
-floating_modifier $mod
-
-#bindcode 133                            exec polybar-msg cmd show
-#bindcode 133 --release                
-
 
 
 ## System // Shortcut help //  + shift + h ? ##
@@ -637,14 +190,10 @@ bindsym $mod+b 						exec --no-startup-id i3run -c mpv -- mpv
 bindsym $mod+x 			     [con_mark="signal"] scratchpad show 
 #bindsym $mod+o                   scratchpad show
 # bindsym $mod+f 						exec  ~/.config/rofi/scripts/rofi-file-selector/rofi-file-selector.sh
-# bindsym $mod+q 						exec qutebrowser
 bindsym $mod+q 						exec --no-startup-id i3run -i qutebrowser -e qutebrowser
-bindsym $mod+Return                  exec alacritty 
+# bindsym $mod+Return                  exec alacritty 
 bindsym $mod+Shift+Return            exec alacritty -e kak $(fzf)
-# bindsym Shift+Escape                 kill
-# bindsym Mod1+e                       exec rofi -show drun
 # bindsym Control+Mod1+o               exec --no-startup-id i3run --summon --instance fif -- alacritty --class fif -o background_opacity=1.0 -e nnn
-# bindsym Control+$mod+t       				 exec st -n time -e tty-clock
 bindsym Control+$mod+w               exec st -n wttr -f 'Liberation Mono:size=8' -e sh -c 'curl -s sv.wttr.in/Stockholm && exec zsh'
 #bindsym $mod+u                      exec alacritty --class gotop -e gotop  
 # bindsym $mod+Shift+x                 exec networkmanager_dmenu
@@ -654,12 +203,9 @@ bindsym $mod+f                       exec rofi-rbw
 #bindsym $mod+m 			  exec urxvt -name ncmpcpp -e ncmpcpp
 bindsym $mod+Shift+o 			     exec alacritty --class alsamixer -e pulsemixer
 bindsym $mod+p						 exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
-bindsym $mod+Shift+p                 exec alacritty --class xcolor -e --hold xcolor
-bindsym $mod+Shift+x				 exec alacritty --class scli -e scli -u +46702126119 -n 
-
-#bindsym $mod+Shift+m exec urxvt -name ncmpcpp -e ncmpcpp;  exec ~/.local/bin/bum
-
-bindsym Print									exec rofi-screenshot
+bindsym $mod+Control+p                 exec alacritty --class xcolor -e --hold xcolor
+# bindsym $mod+Shift+x				 exec alacritty --class scli -e scli -u +46702126119 -n 
+# bindsym Print									exec rofi-screenshot
 
 
 ## Mark // Code // r + g 
@@ -667,23 +213,26 @@ bindsym Control+Mod1+g		exec --no-startup-id i3run --instance code-main -- sh ~/
 bindsym $mod+y		exec --no-startup-id ~/scripts/rofi-window.sh
 
 bindsym Control+Mod1+h				exec $term
-bindsym Mod1+Control+Shift+h 	exec --no-startup-id alacritty msg create-window --working-directory `xcwd`
-bindsym Control+Mod1+i				fullscreen toggle
+bindsym Mod1+Control+Shift+h 	exec --no-startup-id alacritty msg create-window --class popup  
+bindcode Mod1+Control+48 	exec --no-startup-id alacritty msg create-window --class popup -e revChatGPT 
+bindsym $mod+ä 	exec --no-startup-id alacritty msg create-window --class popup -e revChatGPT 
+bindcode $mod+48 	exec --no-startup-id i3run -s -i chatgpt -- alacritty msg create-window --class chatgpt -e revChatGPT 
 bindsym Control+Mod1+e				exec rofi -show drun	
 bindsym Mod1+Control+Shift+e  exec rofi -show window
 bindsym $mod+m 							 exec rofi -show window
 # bindsym Control+Mod1+a				exec qutebrowser
 bindsym Control+Mod1+a				exec --no-startup-id i3run -i qutebrowser -e qb
 bindsym Control+Shift+Mod1+a	exec --no-startup-id qb
+bindsym Control+Mod1+o				exec --no-startup-id alacritty --class mixer -e pulsemixer
+bindsym $mod+r				exec --no-startup-id alacritty --class mixer -e pulsemixer
+bindsym $mod+k				exec --no-startup-id alacritty msg create-window --class mpv -e ytfzf
 
 bindsym $mod+z exec --no-startup-id i3-focus-last
 bindsym $mod+Shift+z exec --no-startup-id i3-focus-last menu
 
 bindsym $mod+Shift+u exec i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Go to: '
 
-
-##########MARKS#############
-
+bindsym Control+Mod1+$mod+z	mode "Secondary"
 
 bindsym $mod+Shift+Control+u exec \
     i3-msg -t get_marks | \
@@ -691,142 +240,73 @@ bindsym $mod+Shift+Control+u exec \
     rofi -dmenu -p 'Unmark' | \
     xargs -I{} i3-msg '[con_mark="{}"] unmark'
 
-
-
-
-# bindsym Control+Mod1+g				kill
-
-# bindsym $mod+-			     gaps inner current plus 1
-# bindsym $mod+Shift+-	       	     gaps inner current minus 1
-
-# change focus
-# bindsym $mod+t                       focus left
-# bindsym $mod+n                       focus down
-# bindsym $mod+l                       focus up
-# bindsym $mod+s                       focus right
-
-# # alternatively, you can use the cursor keys:
-# bindsym $mod+Left                    focus left
-# bindsym $mod+Down                    focus down
-# bindsym $mod+Up                      focus up
-# bindsym $mod+Right                   focus right
-
-# # move                       focused window
-# bindsym $mod+Shift+t                 move left
-# bindsym $mod+Shift+n                 move down
-# bindsym $mod+Shift+l                move up
-# bindsym $mod+Shift+s                 move right
-
-# # alternatively, you can use the cursor keys:
-# bindsym $mod+Shift+Left              move left
-# bindsym $mod+Shift+Down              move down
-# bindsym $mod+Shift+Up                move up
-# bindsym $mod+Shift+Right             move right
-
-# # split in horizontal orientation
-# bindsym $mod+w                       split h
-
-# # split in vertical orientation
-# bindsym $mod+v                       split v
-
-# # enter fullscreen mode for the focused container
-# bindsym $mod+o                       fullscreen toggle
-
-# change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+Shift+w                 layout stacking
-#bindsym $mod+w                       layout tabbed
-#bindsym $mod+e                       layout toggle split
-
-# toggle tiling / floating
-# for_window [floating] move position center
-# bindsym $mod+Shift+space             floating toggle
-
-# change focus between tiling / floating windows
-# bindsym $mod+space                   focus mode_toggle
-
-# focus the parent container
-#bindsym $mod+a                       focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
-
-# switch to workspace
-# bindcode $mod+43                       workspace 1; exec ~/scripts/hidebar
-# bindcode $mod+31                       workspace 2; exec ~/scripts/hidebar unhide
-# bindcode $mod+26                      workspace 3; exec ~/scripts/hidebar unhide
-# bindcode $mod+a                       workspace 4; exec ~/scripts/hidebar unhide
-# bindcode $mod+g                       workspace 5; exec ~/scripts/hidebar unhide
-# bindcode $mod+d                       workspace 6; exec ~/scripts/hidebar unhide
-#bindsym $mod+r                       workspace 7; exec ~/scripts/hidebar unhide
-#bindsym $mod+:                       workspace 8; exec ~/scripts/hidebar unhide
-# bindsym $mod+h                       workspace number 1:[H]
-# bindsym $mod+i                       workspace number 2:[I]
-# bindsym $mod+e                       workspace number 3:[E]
-# bindsym $mod+a                       workspace number 4:[A]
-# bindsym $mod+g                       workspace number 5:[G]
-# bindsym $mod+d                       workspace number 6:[D]
-# bindsym $mod+9                       workspace 9
-# bindsym $mod+0                       workspace 10
-# # move focused container to workspace
-# bindsym $mod+Control+h move container to workspace 1
-# bindsym $mod+Control+i move container to workspace 2
-# bindsym $mod+Control+e move container to workspace 3
-# bindsym $mod+Control+a move container to workspace 4
-# bindsym $mod+Control+g move container to workspace 5
-# bindsym $mod+Control+d move container to workspace 6
-# # bindsym $mod+Shift+9 move container to workspace 7
-# # bindsym $mod+Shift+0 move container to workspace 8
-# bindsym $mod+Shift+9 move container to workspace 9
-# bindsym $mod+Shift+0 move container to workspace 10
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
-# resize window (you can also use the mouse for that)
-# mode "resize" {
-#        # These bindings trigger as soon as you enter the resize mode
-
-#         # Pressing left will shrink the window’s width.
-#         # Pressing right will grow the window’s width.
-#         # Pressing up will shrink the window’s height.
-#         # Pressing down will grow the window’s height.
-#         bindsym t resize shrink width 10 px or 10 ppt
-#         bindsym l resize grow height 10 px or 10 ppt
-#         bindsym n resize shrink height 10 px or 10 ppt
-#         bindsym s resize grow width 10 px or 10 ppt
-
-#         # same bindings, but for the arrow keys
-#         bindsym Left resize shrink width 10 px or 10 ppt
-#         bindsym Down resize grow height 10 px or 10 ppt
-#         bindsym Up resize shrink height 10 px or 10 ppt
-#         bindsym Right resize grow width 10 px or 10 ppt
-
-#         # back to normal: Enter or Escape
-#         bindsym Return mode "default"
-#         bindsym Escape mode "default"
-# }
-
-bindsym Control+Mod1+y mode "resize"
+bindsym $mod+Shift+v mode "resize"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id pulsemixer --change-volume +10
 # bindsym XF86AudioRaiseVolume exec --no-startup-id pulsemixer --change-volume +10; pulseemixer --get-volume | while read OUTPUT; do notify-send "volume "$(echo "$OUTPUT" | sed "s/\ .*//"); done  
 bindsym XF86AudioLowerVolume exec --no-startup-id pulsemixer --change-volume -10
 bindsym XF86AudioMute exec --no-startup-id pulsemixer --toggle-mute
 
-bindsym Control+XF86AudioRaiseVolume exec --no-startup-id tempcolor -inc 5
-bindsym Control+XF86AudioLowerVolume exec --no-startup-id tempcolor -dec 5
+# bindsym Control+XF86AudioRaiseVolume exec --no-startup-id tempcolor -inc 5
+# bindsym Control+XF86AudioLowerVolume exec --no-startup-id tempcolor -dec 5
 bindsym Shift+XF86AudioRaiseVolume exec --no-startup-id xbacklight -inc 10
 bindsym Shift+XF86AudioLowerVolume exec --no-startup-id xbacklight -dec 10
 
-## Toggle // redshift // Shift + Mute ##
-bindsym Shift+XF86AudioMute exec --no-startup-id pkill -USR1 redshift
+############WINDOW RULES###########################
+# for_window [class="^.*"] border pixel 1
+for_window [con_mark="ncmp"] floating enable
+for_window [class="mpv"] floating enable, move center, resize set 1440 900
+for_window [class="imv"] floating enable, move center, resize set 380 380
+no_focus [class="imv"]
+for_window [class="music" ] floating enable, move scratchpad, move center, resize set 1800 880, scratchpad show
+for_window [class="fzf"] floating enable, move center, resize set 1000 680 
+for_window [class="preview"] floating enable, move center, resize set 1000 680  
+no_focus [class="preview"]
+# for_window [class="Alacritty" instance="nnn"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show
+for_window [class="nnn"] floating enable, move center, resize set 1000 600 
+for_window [class="popup"] floating enable, move center, resize set 1000 600 
+for_window [class="chatgpt"] floating enable, move center, resize set 1000 600 
+for_window [class="mixer"] floating enable, move center, resize set 1000 600 
+# for_window [class="Alacritty" instance="fzf"] floating enable, move absolute position 280 120, resize set 1000 600, scratchpad show, focus
+for_window [class="Alacritty" instance="code-tree"] move left, resize set width 200 px
+for_window [class="Alacritty" instance="code-side"] move right
+for_window [class="Alacritty" instance="code-main"] resize set width 1000 px
+# for_window [class="eww-barr"] floating enable, move absolute position 0 0  
+# no_focus [class="eww-barr"]
+
+
+
+
 
 # deamonise
-exec --no-startup-id picom --experimental-backends 
+# exec --no-startup-id picom
+# exec --no-startup-id redshift -l 59:18
+# exec --no-startup-id setxkbmap se
+# exec --no-startup-id dunst
+#exec --no-startup-id feh --bg-fill Bilder/G3back.png   
+#exec --no-startup-id wal -n -i ~/Bilder/blade_runner_2049_poster_by_xlzipx_dbom4d6-fullview.jpg
+# exec --no-startup-id greenclip daemon
+# exec --no-startup-id eww open barr
+# exec --no-startup-id unclutter
+# exec --no-startup-id ./scripts/i3scripts/i3-marks update
+
+
+
+# bindsym XF86AudioRaiseVolume exec --no-startup-id pulsemixer --change-volume +10
+# # bindsym XF86AudioRaiseVolume exec --no-startup-id pulsemixer --change-volume +10; pulseemixer --get-volume | while read OUTPUT; do notify-send "volume "$(echo "$OUTPUT" | sed "s/\ .*//"); done  
+# bindsym XF86AudioLowerVolume exec --no-startup-id pulsemixer --change-volume -10
+# bindsym XF86AudioMute exec --no-startup-id pulsemixer --toggle-mute
+
+# bindsym Control+XF86AudioRaiseVolume exec --no-startup-id tempcolor -inc 5
+# bindsym Control+XF86AudioLowerVolume exec --no-startup-id tempcolor -dec 5
+# bindsym Shift+XF86AudioRaiseVolume exec --no-startup-id xbacklight -inc 10
+# bindsym Shift+XF86AudioLowerVolume exec --no-startup-id xbacklight -dec 10
+# 
+## Toggle // redshift // Shift + Mute ##
+# bindsym Shift+XF86AudioMute exec --no-startup-id pkill -USR1 redshift
+
+# deamonise
+exec --no-startup-id picom
 exec --no-startup-id redshift -l 59:18
 exec --no-startup-id dunst
 #exec --no-startup-id conky -c clock--date--weather__big/.conkyrc
@@ -834,18 +314,21 @@ exec --no-startup-id feh --bg-fill Bilder/G3back.png
 #exec --no-startup-id mopidy
 #exec --no-startup-id ~/scripts/mpd-fifo
 
-exec --no-startup-id wal -n -i ~/Bilder/blade_runner_2049_poster_by_xlzipx_dbom4d6-fullview.jpg
+# exec --no-startup-id wal -n -i ~/Bilder/blade_runner_2049_poster_by_xlzipx_dbom4d6-fullview.jpg
 
 #exec xdotool search -name "polybar-simple"|head -1 >/tmp/pbar
 #exec ~/scripts/hidebar
 #exec --no-startup-id ~/.local/bin/bum
 #exec --no-startup-id urxvt -name ncmpcpp -e ncmpcpp
-exec --no-startup-id flashfocus
+# exec --no-startup-id flashfocus
 exec --no-startup-id greenclip daemon
-exec --no-startup-id kmonad .config/kmonad/test.kbd
-exec --no-startup-id sh scripts/rebind-trackpad-buttons.sh
+exec --no-startup-id setxkbmap se
+# exec --no-startup-id kmonad .config/kmonad/test.kbd
+# exec --no-startup-id scripts/rebind-trackpad-buttons.sh
+exec --no-startup-id ./scripts/i3scripts/i3-marks update
+exec --no-startup-id eww open barr
 exec --no-startup-id pipewire
 # exec --no-startup-id pipewire-pulse
-exec --no-startup-id polybar mybar
+# exec --no-startup-id polybar mybar
 
 
