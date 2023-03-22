@@ -1,0 +1,20 @@
+#!/bin/bash
+get_ws(){
+# i3-msg -t get_workspaces | jq  '.[] | {name: .name, focused: .focused}' | jq -s
+  arr=()
+  index=0
+  while read w; do
+     workspace=$(i3-msg -t get_tree | jq  -c --argjson index "$index" '.nodes[].nodes[].nodes[$index] | {name: .name, nodes: .nodes, focused: .focused} | select(.name != null) | select(.name|test("[HIAGDE]"))')
+     wins=$(echo $workspace | jq -c '[.. | {name, window_type, marks, focused, window_properties}? | select(.window_type !=	null)]')
+     arr+=$(echo $w | jq --arg wins "$wins" '. += {"wins": $wins} | {name: .name, focused: .focused, windows: .wins}')
+     let index+=1
+  done < <(i3-msg -t get_workspaces | jq -c '.[] | {name: .name, focused: .focused}')
+  echo ${arr[@]} | jq -s '.'
+}
+
+# listener() {
+  # i3-msg -t subscribe -m '[ "window" ]' | while read -r line ; do
+    get_ws
+  # done
+# }
+# listener

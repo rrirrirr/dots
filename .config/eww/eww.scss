@@ -1,0 +1,113 @@
+// Global
+*{
+  all: unset;
+}
+
+// Variable Color's
+$background: #1e1e2e;
+$foreground: #cdd6f4;
+
+$black: #24283B;
+$gray: #6c7086;
+$red: #f38ba8;
+$green: #a6e3a1;
+$yellow: #f9e2af;
+$blue: 	#89b4fa;
+$magenta: #cba6f7;
+$cyan: #89dceb;
+$white: $foreground;
+
+// EWW BAR
+.eww_bar{
+  background-color: $background;
+  padding: .3rem;
+}
+
+.defaultstate {
+  // background-color: $background;
+}
+
+.otherstate {
+  background-color: $magenta;
+}
+
+.icon{
+    font-family: "JetBrainsMono Nerd Font";
+    // font-family: "Font Awesome 6 Pro";
+    font-size: 2.2em;
+    // padding: 1rem 0 1rem 0;
+}
+.mark{
+  color: $yellow;
+  font-size: 0.6em;
+}
+
+// Workspaces
+.works {
+font-family: "Font Awesome 6 Pro";
+padding: .2rem .7rem .2rem .7rem;
+background-color: $black;
+border-radius: 5px;
+}
+
+.workspace {
+  font-family: "JetBrainsMono Nerd Font";
+  background-color: $black;
+  border-radius: 1rem;
+  padding: .5rem;
+}
+
+.0 , .01, .02, .03, .04, .05, .06,
+.011, .022, .033, .044, .055, .066{
+  margin: .55rem 0 .55rem 0;
+}
+
+/* Unoccupied */
+.0 {
+color: $gray;
+}
+
+/* Occupied */
+.01, .02, .03, .04, .05, .06 {
+  color: $gray;
+}
+
+.active {
+  // border-radius: 50%;
+  border-radius: 1rem;
+  padding:	0.8rem;
+  border: solid 1px;
+  background: $red;
+  color: $black;
+  font-weight: bold;
+}
+.inactive {
+  // border-radius: 50%;
+  background: $gray;
+  border-radius: 1rem;
+  padding:	0.1rem;
+  border: solid 1px $black;
+  color: $white;
+  font-weight: bold;
+
+}
+.activew {
+  color: $green;
+  font-weight: bold;
+}
+.inactivew {
+  color: $white;
+}
+
+// Clock
+.time {
+  font-family: Comic Mono;
+  font-weight: bold;
+  font-size: 1.2em;
+  background-color: $black;
+  color: $white;
+  border-radius: 5px;
+  padding: .7rem 0 .5rem 0;
+  margin: .5rem 0 .5rem 0;
+}
+

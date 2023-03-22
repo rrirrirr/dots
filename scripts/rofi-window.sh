@@ -36,6 +36,10 @@ case $selections in
     i3-msg split v
     i3-msg layout tabbed
     ;;
+  tabnext)
+    i3-msg split v
+    i3-msg layout tabbed
+    ;;
   splith)
     i3-msg layout splith
     ;;
@@ -50,3 +54,4 @@ case $selections in
     echo -n "unknown"
     ;;
 esac
+

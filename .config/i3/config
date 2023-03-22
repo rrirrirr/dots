@@ -279,6 +279,7 @@ for_window [class="Alacritty" instance="code-main"] resize set width 1000 px
 
 
 # deamonise
+<<<<<<< HEAD
 # exec --no-startup-id picom
 # exec --no-startup-id redshift -l 59:18
 # exec --no-startup-id setxkbmap se
@@ -308,9 +309,10 @@ for_window [class="Alacritty" instance="code-main"] resize set width 1000 px
 # deamonise
 exec --no-startup-id picom
 exec --no-startup-id redshift -l 59:18
+exec --no-startup-id setxkbmap se
 exec --no-startup-id dunst
 #exec --no-startup-id conky -c clock--date--weather__big/.conkyrc
-exec --no-startup-id feh --bg-fill Bilder/G3back.png   
+# exec --no-startup-id feh --bg-fill Bilder/G3back.png   
 #exec --no-startup-id mopidy
 #exec --no-startup-id ~/scripts/mpd-fifo
 
@@ -330,5 +332,11 @@ exec --no-startup-id eww open barr
 exec --no-startup-id pipewire
 # exec --no-startup-id pipewire-pulse
 # exec --no-startup-id polybar mybar
+#exec --no-startup-id feh --bg-fill Bilder/G3back.png   
+#exec --no-startup-id wal -n -i ~/Bilder/blade_runner_2049_poster_by_xlzipx_dbom4d6-fullview.jpg
+exec --no-startup-id greenclip daemon
+# exec --no-startup-id unclutter
+# exec --no-startup-id ./scripts/i3scripts/i3-marks update
+
 
 
